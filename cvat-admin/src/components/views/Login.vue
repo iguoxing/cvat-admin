@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-09-29 17:04:46
+ * @LastEditTime: 2022-09-29 18:05:56
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -12,18 +12,18 @@ import { message, Modal } from 'ant-design-vue'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 import { createVNode } from 'vue'
 import axios from '../../stores/interface'
+import { useRouter, useRoute } from 'vue-router'
+// import router from '../../router/index'
 
 // defineProps<{
 //   msg: string
 // }>()
 
-// const count = ref(0);
 const account = ref(null);
 const password = ref(null);
+const router = useRouter()
 
 function goTo() {
-  console.log(123, account);
-  //b3850be859451b4eef5dcdd6bf65a013e7cd7a5d
   const promise = new Promise((resolve, reject) => {
     axios({
       method: 'post',
@@ -33,13 +33,14 @@ function goTo() {
         password: password.value,
       }
     }).then(function (data) {
-      resolve(data.data)
+      resolve(data && data.data)
     })
   })
 
   promise.then((result) => {
     if (result && result.key) {
       localStorage.token = result.key
+      // router.push('home')
     }
     if (result.code == 200) {
       // if (res.accountList && res.accountList.length > 0) {

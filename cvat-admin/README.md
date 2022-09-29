@@ -50,3 +50,11 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+## Vue3 基础用法
+https://cn.vuejs.org/guide/quick-start.html
+## Vite
+https://cn.vitejs.dev/guide/
+
+## ant design 组件库
+https://antdv.com/components/overview-cn/
