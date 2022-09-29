@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-09-28 18:10:59
+ * @LastEditTime: 2022-09-29 17:04:46
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -11,29 +11,72 @@ import { message, Modal } from 'ant-design-vue'
 
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 import { createVNode } from 'vue'
+import axios from '../../stores/interface'
 
-defineProps<{
-  msg: string
-}>()
+// defineProps<{
+//   msg: string
+// }>()
 
-const count = ref(0)
+// const count = ref(0);
+const account = ref(null);
+const password = ref(null);
+
+function goTo() {
+  console.log(123, account);
+  //b3850be859451b4eef5dcdd6bf65a013e7cd7a5d
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: 'post',
+      url: import.meta.env.VITE_APP_BASE_URL + 'api/auth/login',
+      data: {
+        username: account.value,
+        password: password.value,
+      }
+    }).then(function (data) {
+      resolve(data.data)
+    })
+  })
+
+  promise.then((result) => {
+    if (result && result.key) {
+      localStorage.token = result.key
+    }
+    if (result.code == 200) {
+      // if (res.accountList && res.accountList.length > 0) {
+      //   _this.accountList = res.accountList
+      // } else {
+      //   if (result.errCode == 'LOGIN_REPEAT') {
+      //     _this.isOnlyOneLogin = false
+      //     _this.showConfirm(_this, result.message)
+      //   } else {
+      //     localStorage.token = res.token
+      //     localStorage.ocrPersonInfo = JSON.stringify(res.info)
+      //     if (res.info.role == '40') {
+      //       _this.$router.push('/tag')
+      //     } else if (res.info.role == '30') {
+      //       _this.$router.push('/supplier')
+      //     } else if (res.info.role == '50') {
+      //       _this.$router.push('/checkout')
+      //     } else {
+      //       _this.$router.push('/home')
+      //     }
+      //   }
+      // }
+    } else {
+      message.error(result.message)
+    }
+  })
+}
+
 </script>
 
 <template>
   <div id="components-layout-demo-basic" class="index">
     <a-layout>
-      <a-layout-header>Header</a-layout-header>
-      <a-layout>
-        <a-layout-content>Content</a-layout-content>
-        <a-layout-sider>Sider</a-layout-sider>
-      </a-layout>
-      <a-layout-footer>Footer</a-layout-footer>
-    </a-layout>
-    <!-- <a-layout>
       <a-layout-content>
         <div class="login-div">
-          <a-card title="视觉标注工作平台-V3" bodyStyle="{padding:24px}">
-            {{ msg }}--<button @click="count++">{{ count }}</button>
+          <a-card title="CVAT Utrans Platform V1.0" bodyStyle="{padding:24px}">
+            <!-- {{ msg }}--<button @click="count++">{{ count }}</button> -->
             <a-input v-model:value="account" placeholder="请输入手机号或邮箱" />
             <a-input-password
               v-model:value="password"
@@ -42,15 +85,15 @@ const count = ref(0)
             <a-button type="primary" @click="goTo" @keyup.enter="goTo" block
               >登录</a-button
             >
-            <a-tag color="blue" class="mt-3">推荐使用谷歌浏览器，您将获得最佳使用体验~</a-tag>
+            <!-- <a-tag color="blue" class="mt-3">推荐使用谷歌浏览器，您将获得最佳使用体验~</a-tag> -->
           </a-card>
         </div>
       </a-layout-content>
-      <a-layout-footer
+      <!-- <a-layout-footer
         >©版权所有：北京公司
         京ICP备1</a-layout-footer
-      >
-    </a-layout> -->
+      > -->
+    </a-layout>
   </div>
 </template>
 
@@ -95,15 +138,15 @@ input[type='text'],
 #components-layout-demo-basic .ant-layout{
   background: #282c34;
   /* background: linear-gradient(to bottom,#063b6d,#282c34); */
-  /* background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg); */
-  /* background-repeat: no-repeat;
+  /* background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
+  background-repeat: no-repeat;
   background-size: contain; */
 }
 #components-layout-demo-basic .ant-layout-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #282c34;
+  /* background: #282c34; */
   /* background: rgba(16, 142, 233, 1); */
   color: #fff;
   min-height: 120px;
