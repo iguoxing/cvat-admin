@@ -28,8 +28,16 @@ a,
   }
 
   #app {
-    display: grid;
+    display: flex;
+    height: 100%;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+  /* #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+  } */
 }
