@@ -1,12 +1,10 @@
 @import "./base.css";
 
 #app {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* padding: 2rem; */
+  width: 100vw;
   height: 100vh;
   font-weight: normal;
 }
@@ -31,10 +29,9 @@ a,
   }
 
   #app {
-    display: flex;
     height: 100%;
     grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    /* padding: 0 2rem; */
   }
   /* #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;

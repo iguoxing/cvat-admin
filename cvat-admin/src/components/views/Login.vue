@@ -1,76 +1,10 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-09-29 18:05:56
+ * @LastEditTime: 2022-09-30 11:03:34
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
-<script setup lang="ts">
-import { ref } from 'vue'
-import { message, Modal } from 'ant-design-vue'
-
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
-import { createVNode } from 'vue'
-import axios from '../../stores/interface'
-import { useRouter, useRoute } from 'vue-router'
-// import router from '../../router/index'
-
-// defineProps<{
-//   msg: string
-// }>()
-
-const account = ref(null);
-const password = ref(null);
-const router = useRouter()
-
-function goTo() {
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url: import.meta.env.VITE_APP_BASE_URL + 'api/auth/login',
-      data: {
-        username: account.value,
-        password: password.value,
-      }
-    }).then(function (data) {
-      resolve(data && data.data)
-    })
-  })
-
-  promise.then((result) => {
-    if (result && result.key) {
-      localStorage.token = result.key
-      // router.push('home')
-    }
-    if (result.code == 200) {
-      // if (res.accountList && res.accountList.length > 0) {
-      //   _this.accountList = res.accountList
-      // } else {
-      //   if (result.errCode == 'LOGIN_REPEAT') {
-      //     _this.isOnlyOneLogin = false
-      //     _this.showConfirm(_this, result.message)
-      //   } else {
-      //     localStorage.token = res.token
-      //     localStorage.ocrPersonInfo = JSON.stringify(res.info)
-      //     if (res.info.role == '40') {
-      //       _this.$router.push('/tag')
-      //     } else if (res.info.role == '30') {
-      //       _this.$router.push('/supplier')
-      //     } else if (res.info.role == '50') {
-      //       _this.$router.push('/checkout')
-      //     } else {
-      //       _this.$router.push('/home')
-      //     }
-      //   }
-      // }
-    } else {
-      message.error(result.message)
-    }
-  })
-}
-
-</script>
-
 <template>
   <div id="components-layout-demo-basic" class="index">
     <a-layout>
@@ -83,10 +17,9 @@ function goTo() {
               v-model:value="password"
               placeholder="请输入密码"
             />
-            <a-button type="primary" @click="goTo" @keyup.enter="goTo" block
-              >登录</a-button
-            >
-            <!-- <a-tag color="blue" class="mt-3">推荐使用谷歌浏览器，您将获得最佳使用体验~</a-tag> -->
+            <a-button type="primary" @click="goTo" @keyup.enter="goTo" block>
+              登录
+            </a-button>
           </a-card>
         </div>
       </a-layout-content>
@@ -98,17 +31,57 @@ function goTo() {
   </div>
 </template>
 
+<script setup lang="ts">
+import { ref } from "vue";
+import { message, Modal } from "ant-design-vue";
+
+import axios from "../../stores/interface";
+import { useRouter, useRoute } from "vue-router";
+// import router from '../../router/index'
+
+// defineProps<{
+//   msg: string
+// }>()
+
+const account = ref(null);
+const password = ref(null);
+const router = useRouter();
+
+function goTo() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/auth/login",
+      data: {
+        username: account.value,
+        password: password.value,
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result) => {
+    if (result && result.key) {
+      localStorage.token = result.key;
+      router.push({ name: "home" });
+    }
+  });
+}
+</script>
 <style scoped>
 .login-div {
   margin-top: -100px;
   width: 450px;
 }
-input[type='text'],
-.ant-input-affix-wrapper,.ant-select-selector {
+input[type="text"],
+.ant-input-affix-wrapper,
+.ant-select-selector {
   height: 50px;
 }
-.ant-select-selector,.ant-select-selection-item{
-  height: 50px!important;
+.ant-select-selector,
+.ant-select-selection-item {
+  height: 50px !important;
   line-height: 50px;
 }
 .ant-btn-block {
@@ -116,15 +89,19 @@ input[type='text'],
   height: 50px;
 }
 #components-layout-demo-basic {
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
   text-align: center;
+  background: #282c34;
 }
 .ant-layout {
   height: 100%;
 }
 #components-layout-demo-basic .ant-layout-header,
 #components-layout-demo-basic .ant-layout-footer {
-  /* background: #7dbcea; */
   background: #282c34;
   color: #fff;
 }
@@ -136,12 +113,12 @@ input[type='text'],
   color: #fff;
   line-height: 120px;
 }
-#components-layout-demo-basic .ant-layout{
+#components-layout-demo-basic .ant-layout {
   background: #282c34;
-  /* background: linear-gradient(to bottom,#063b6d,#282c34); */
-  /* background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
+  background: linear-gradient(to bottom,#063b6d,#282c34);
+  background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
   background-repeat: no-repeat;
-  background-size: contain; */
+  background-size: contain;
 }
 #components-layout-demo-basic .ant-layout-content {
   display: flex;
