@@ -1,7 +1,7 @@
 /*
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:02:16
- * @LastEditTime: 2022-09-29 17:38:51
+ * @LastEditTime: 2022-10-02 07:31:16
  * @FilePath: /cvat-admin/src/stores/interface.ts
  * @Description: file information
  */
@@ -12,7 +12,7 @@ import { message } from "ant-design-vue";
 // 添加请求拦截器
 axios.interceptors.request.use(
   function (config) {
-    config.headers.Authorization = "Token " + localStorage.token;
+    localStorage.token && (config.headers.Authorization = "Token " + localStorage.token);
     // config.headers.Authorization = "Bearer " + localStorage.token;
     config.headers["Cache-Control"] = "no-cache";
     if (/get/i.test(config.method)) {
