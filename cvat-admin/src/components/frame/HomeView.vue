@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-02 07:54:09
+ * @LastEditTime: 2022-10-03 10:48:40
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -16,29 +16,127 @@ const cardStyle = {
 };
 const columns = [
   {
-    title: "项目名",
+    title: "路线名称",
     dataIndex: "name",
   },
   {
-    title: "总量（张）",
+    title: "起点桩号",
     dataIndex: "total_count",
   },
   {
-    title: "日均产能（张）",
+    title: "终点桩号",
     dataIndex: "average_daily_output",
   },
   {
-    title: "进度",
+    title: "里程（终点-起点）",
     dataIndex: "project_process",
     slots: { customRender: "project_process" },
   },
   {
-    title: "工期",
+    title: "总张数",
+    dataIndex: "average_daily_output",
+  },
+  {
+    title: "标注进度（标注完成的图片/总图片）",
     dataIndex: "construction_period",
     slots: { customRender: "construction_period" },
   },
   {
+    title: "是否验收（已验收/未验收）",
+    dataIndex: "end_date",
+  },
+  {
     title: "截止日期",
+    dataIndex: "end_date",
+  },
+];
+
+const stationColumns = [
+  {
+    title: "桩号名称",
+    dataIndex: "name",
+  },
+  {
+    title: "起点桩号",
+    dataIndex: "total_count",
+  },
+  {
+    title: "终点桩号",
+    dataIndex: "average_daily_output",
+  },
+  {
+    title: "里程（终点-起点）",
+    dataIndex: "project_process",
+    slots: { customRender: "project_process" },
+  },
+  {
+    title: "总张数",
+    dataIndex: "average_daily_output",
+  },
+  {
+    title: "标注进度（标注完成的图片/总图片）",
+    dataIndex: "construction_period",
+    slots: { customRender: "construction_period" },
+  },
+  {
+    title: "是否验收（已验收/未验收）",
+    dataIndex: "end_date",
+  },
+  {
+    title: "截止日期",
+    dataIndex: "end_date",
+  },
+];
+
+const tagColumns = [
+  {
+    title: "路线",
+    dataIndex: "name",
+  },
+  {
+    title: "桩号",
+    dataIndex: "total_count",
+  },
+  {
+    title: "起点桩号",
+    dataIndex: "average_daily_output",
+  },
+  {
+    title: "终点桩号",
+    dataIndex: "project_process",
+    slots: { customRender: "project_process" },
+  },
+  {
+    title: "里程数",
+    dataIndex: "average_daily_output",
+  },
+  {
+    title: "标注员",
+    dataIndex: "construction_period",
+    slots: { customRender: "construction_period" },
+  },
+  {
+    title: "审核员",
+    dataIndex: "end_date",
+  },
+  {
+    title: "创建人",
+    dataIndex: "end_date",
+  },
+  {
+    title: "损坏类型",
+    dataIndex: "end_date",
+  },
+  {
+    title: "矩形",
+    dataIndex: "end_date",
+  },
+  {
+    title: "曲线",
+    dataIndex: "end_date",
+  },
+  {
+    title: "椭圆",
     dataIndex: "end_date",
   },
 ];
@@ -80,6 +178,74 @@ const homeData = {
     <a-card title="路线信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="columns"
+        :row-key="(record) => 'row' + homeData.process.id"
+        :data-source="homeData.process"
+        :pagination="false"
+        :bordered="true"
+      >
+        <template #status="{ record }">
+          <div>
+            <a-tag color="green" v-if="record.status == 0">正常</a-tag>
+          </div>
+        </template>
+        <template #project_process="{ record }">
+          <a-progress :percent="record.project_process" />
+        </template>
+        <template #construction_period="{ record }">
+          <span
+            v-if="record.construction_period > record.project_process"
+            class="flex"
+          >
+            <a-progress
+              :percent="record.construction_period"
+              strokeColor="red"
+              :showInfo="false"
+            />
+            {{ record.construction_period }}%
+          </span>
+          <span v-if="record.construction_period <= record.project_process">
+            <a-progress :percent="record.construction_period" />
+          </span>
+        </template>
+      </a-table>
+    </a-card>
+    <a-card title="桩号信息" class="mt-3" :headStyle="headStyle" size="small">
+      <a-table
+        :columns="stationColumns"
+        :row-key="(record) => 'row' + homeData.process.id"
+        :data-source="homeData.process"
+        :pagination="false"
+        :bordered="true"
+      >
+        <template #status="{ record }">
+          <div>
+            <a-tag color="green" v-if="record.status == 0">正常</a-tag>
+          </div>
+        </template>
+        <template #project_process="{ record }">
+          <a-progress :percent="record.project_process" />
+        </template>
+        <template #construction_period="{ record }">
+          <span
+            v-if="record.construction_period > record.project_process"
+            class="flex"
+          >
+            <a-progress
+              :percent="record.construction_period"
+              strokeColor="red"
+              :showInfo="false"
+            />
+            {{ record.construction_period }}%
+          </span>
+          <span v-if="record.construction_period <= record.project_process">
+            <a-progress :percent="record.construction_period" />
+          </span>
+        </template>
+      </a-table>
+    </a-card>
+    <a-card title="标注统计信息" class="mt-3" :headStyle="headStyle" size="small">
+      <a-table
+        :columns="tagColumns"
         :row-key="(record) => 'row' + homeData.process.id"
         :data-source="homeData.process"
         :pagination="false"
