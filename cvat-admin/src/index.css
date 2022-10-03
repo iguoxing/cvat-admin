@@ -14,3 +14,7 @@
 button, [type='button'], [type='reset'], [type='submit'] {
   background-color: #1890ff;
 }
+.ant-page-header {
+  padding-left: 0;
+  padding-top: 0;
+}

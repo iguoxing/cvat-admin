@@ -25,6 +25,20 @@ const router = createRouter({
       ],
     },
     {
+      path: "/road",
+      component: frame,
+      name: "road",
+      redirect: "/road/index",
+      children: [
+        {
+          path: "index",
+          name: "roadIndex",
+          component: () => import("../components/road/List.vue"),
+          // breadcrumb: false,
+        },
+      ],
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting

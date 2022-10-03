@@ -1,13 +1,13 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-09-30 12:11:09
+ * @LastEditTime: 2022-10-03 12:25:50
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import {
   HomeOutlined,
@@ -40,6 +40,17 @@ onMounted(() => {
   console.log(openKeys.value);
 });
 
+watch(selectedKeys,(val,old) => {
+  console.log('val',val);
+  console.log('old',old);
+  if (val[0] == '100') {
+    router.push({ name: "home" });
+  }
+  if (val[0] == '200') {
+    router.push({ name: "road" });
+  }
+});
+
 function setMenu(val: string) {
   let k = "";
   let m = "";
@@ -47,6 +58,9 @@ function setMenu(val: string) {
   switch (val) {
     case "/home/index":
       k = "100";
+      break;
+    case "/road/index":
+      k = "200";
       break;
   }
   subMenu.value = m;
@@ -93,6 +107,10 @@ function exitLogin() {
         <a-menu-item key="100">
           <HomeOutlined />
           <span :menu="key">主页</span>
+        </a-menu-item>
+        <a-menu-item key="200">
+          <HomeOutlined />
+          <span :menu="key">路线管理</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
