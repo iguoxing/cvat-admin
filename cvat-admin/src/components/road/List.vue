@@ -1,20 +1,15 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-03 12:28:36
+ * @LastEditTime: 2022-10-05 08:55:59
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import type { TableProps, TableColumnType } from "ant-design-vue";
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
+import axios from "../../stores/interface";
+
 const columns = [
   {
     title: "项目ID",
@@ -58,6 +53,33 @@ function onSelectChange(selectedRowKeys) {
   console.log("selectedRowKeys changed: ", selectedRowKeys);
   selectedRowKeys = selectedRowKeys;
 };
+function getList() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
+      params: {
+        page: 1,
+        page_size: 10,
+        filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
+        search: 'name'
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result) => {
+    if (result) {
+      console.log("截止日期", result);
+    }
+  });
+};
+onMounted(() => {
+  console.log(123);
+  getList()
+});
+
 </script>
 
 <template>

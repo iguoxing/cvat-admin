@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-03 12:25:50
+ * @LastEditTime: 2022-10-05 08:52:06
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -37,7 +37,6 @@ onMounted(() => {
   // console.log(route.path)
   selectedKeys.value.push(setMenu(route.path));
   openKeys.value.push(subMenu.value);
-  console.log(openKeys.value);
 });
 
 watch(selectedKeys,(val,old) => {
