@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-05 08:55:59
+ * @LastEditTime: 2022-10-05 20:47:29
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -13,7 +13,7 @@ import axios from "../../stores/interface";
 const columns = [
   {
     title: "项目ID",
-    dataIndex: "name",
+    dataIndex: "id",
   },
   {
     title: "路线名称",
@@ -43,9 +43,7 @@ const columns = [
   },
 ];
 const selectedRowKeys = ref([]);
-const homeData = {
-  process: [{ id: 1 }, { id: 2 }],
-};
+const res = ref([]);
 function newRoad() {
   console.log("截止日期");
 }
@@ -61,8 +59,8 @@ function getList() {
       params: {
         page: 1,
         page_size: 10,
-        filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
-        search: 'name'
+        // filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
+        // search: 'name'
       },
     }).then(function (data) {
       resolve(data && data.data);
@@ -71,7 +69,8 @@ function getList() {
 
   promise.then((result) => {
     if (result) {
-      console.log("截止日期", result);
+      res.value = result.results;
+      console.log("截止日期", res.value);
     }
   });
 };
@@ -98,8 +97,8 @@ onMounted(() => {
         selectedRowKeys: selectedRowKeys.value,
         onChange: onSelectChange,
       }"
-      :row-key="(record) => 'row' + homeData.process.id"
-      :data-source="homeData.process"
+      :row-key="(record) => 'row' + record.id"
+      :data-source="res.value"
       :pagination="false"
       :bordered="true"
     >
