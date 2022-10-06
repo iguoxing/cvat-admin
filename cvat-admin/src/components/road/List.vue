@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-06 10:05:31
+ * @LastEditTime: 2022-10-06 10:58:37
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
-
+import { useRouter, useRoute } from "vue-router";
 const columns = [
   {
     title: "项目ID",
@@ -33,6 +33,19 @@ const columns = [
     slots: { customRender: "complete_task_num" },
   },
   {
+    title: "已标注图片数",
+    dataIndex: "frame_worked"
+  },
+  {
+    title: "图片总数",
+    dataIndex: "frame_num"
+  },
+  {
+    title: "任务桩号",
+    dataIndex: "station_list",
+    slots: { customRender: "station_list" },
+  },
+  {
     title: "状态",
     dataIndex: "status"
   },
@@ -43,8 +56,10 @@ const columns = [
 ];
 const selectedRowKeys = ref([]);
 const res = ref([]);
+const router = useRouter();
+
 function newRoad() {
-  console.log("newRoad");
+  router.push({ name: "roadNew" });
 }
 function onSelectChange(selectedRowKeys) {
   console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -102,6 +117,9 @@ onMounted(() => {
     >
       <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}
+      </template>
+      <template #station_list="{ record }">
+        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
       </template>
     </a-table>
   </div>

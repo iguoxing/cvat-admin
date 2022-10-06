@@ -36,6 +36,12 @@ const router = createRouter({
           component: () => import("../components/road/List.vue"),
           // breadcrumb: false,
         },
+        {
+          path: "new",
+          name: "roadNew",
+          component: () => import("../components/road/New.vue"),
+          // breadcrumb: false,
+        },
       ],
     },
     {
