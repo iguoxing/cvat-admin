@@ -12,6 +12,7 @@ import { message } from "ant-design-vue";
 import {
   HomeOutlined,
   ProjectOutlined,
+  TeamOutlined,
   UserOutlined,
   DownOutlined,
 } from "@ant-design/icons-vue";
@@ -48,6 +49,9 @@ watch(selectedKeys,(val,old) => {
   if (val[0] == '200') {
     router.push({ name: "road" });
   }
+  if (val[0] == '400') {
+    router.push({ name: "person" });
+  }
 });
 
 function setMenu(val: string) {
@@ -60,6 +64,9 @@ function setMenu(val: string) {
       break;
     case "/road/index":
       k = "200";
+      break;
+    case "/person/index":
+      k = "400";
       break;
   }
   subMenu.value = m;
@@ -110,6 +117,10 @@ function exitLogin() {
         <a-menu-item key="200">
           <ProjectOutlined />
           <span :menu="key">路线管理</span>
+        </a-menu-item>
+        <a-menu-item key="400">
+          <TeamOutlined />
+          <span :menu="key">人员管理</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
