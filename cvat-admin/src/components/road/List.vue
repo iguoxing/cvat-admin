@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-05 20:47:29
+ * @LastEditTime: 2022-10-06 10:05:31
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -17,25 +17,24 @@ const columns = [
   },
   {
     title: "路线名称",
-    dataIndex: "total_count",
+    dataIndex: "name",
   },
   {
     title: "开始时间",
-    dataIndex: "average_daily_output",
+    dataIndex: "start_date",
   },
   {
     title: "结束时间",
-    dataIndex: "project_process",
-    slots: { customRender: "project_process" },
+    dataIndex: "end_date",
   },
   {
     title: "完成/总数",
-    dataIndex: "average_daily_output",
+    dataIndex: "complete_task_num",
+    slots: { customRender: "complete_task_num" },
   },
   {
     title: "状态",
-    dataIndex: "construction_period",
-    slots: { customRender: "construction_period" },
+    dataIndex: "status"
   },
   {
     title: "操作",
@@ -45,7 +44,7 @@ const columns = [
 const selectedRowKeys = ref([]);
 const res = ref([]);
 function newRoad() {
-  console.log("截止日期");
+  console.log("newRoad");
 }
 function onSelectChange(selectedRowKeys) {
   console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -70,12 +69,11 @@ function getList() {
   promise.then((result) => {
     if (result) {
       res.value = result.results;
-      console.log("截止日期", res.value);
+      console.log(res.value);
     }
   });
 };
 onMounted(() => {
-  console.log(123);
   getList()
 });
 
@@ -98,33 +96,12 @@ onMounted(() => {
         onChange: onSelectChange,
       }"
       :row-key="(record) => 'row' + record.id"
-      :data-source="res.value"
+      :data-source="res"
       :pagination="false"
       :bordered="true"
     >
-      <template #status="{ record }">
-        <div>
-          <a-tag color="green" v-if="record.status == 0">正常</a-tag>
-        </div>
-      </template>
-      <template #project_process="{ record }">
-        <a-progress :percent="record.project_process" />
-      </template>
-      <template #construction_period="{ record }">
-        <span
-          v-if="record.construction_period > record.project_process"
-          class="flex"
-        >
-          <a-progress
-            :percent="record.construction_period"
-            strokeColor="red"
-            :showInfo="false"
-          />
-          {{ record.construction_period }}%
-        </span>
-        <span v-if="record.construction_period <= record.project_process">
-          <a-progress :percent="record.construction_period" />
-        </span>
+      <template #complete_task_num="{ record }">
+        {{record.complete_task_num}} / {{record.all_task_num}}
       </template>
     </a-table>
   </div>

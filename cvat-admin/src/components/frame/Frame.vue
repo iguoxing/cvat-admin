@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-05 08:52:06
+ * @LastEditTime: 2022-10-06 09:56:15
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -108,7 +108,7 @@ function exitLogin() {
           <span :menu="key">主页</span>
         </a-menu-item>
         <a-menu-item key="200">
-          <HomeOutlined />
+          <ProjectOutlined />
           <span :menu="key">路线管理</span>
         </a-menu-item>
       </a-menu>
