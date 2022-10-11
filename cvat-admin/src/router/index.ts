@@ -45,6 +45,21 @@ const router = createRouter({
       ],
     },
     {
+      // person management
+      path: "/person",
+      component: frame,
+      name: "person",
+      redirect: "/person/index",
+      children: [
+        {
+          path: "index",
+          name: "personIndex",
+          component: () => import("../components/person/List.vue"),
+          // breadcrumb: false,
+        },
+      ],
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting
