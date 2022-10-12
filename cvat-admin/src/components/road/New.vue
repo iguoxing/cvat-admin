@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-06 11:20:23
+ * @LastEditTime: 2022-10-12 10:02:41
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -9,52 +9,56 @@
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import type { Dayjs } from "dayjs";
+import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 
 const selectedRowKeys = ref([]);
 const form = ref({
-  name: "",
-  describe: "",
+  name: "test",
+  describe: "测试",
   start_date: "",
-  end_date: ref<Dayjs>(),
+  startDate: ref<Dayjs>(),
+  endDate: ref<Dayjs>(),
+  end_date: "",
+  files_path: "/hzf_test/",
+  org_width: "80",
+  org_height: "80",
 });
 const rules = {
   name: [{ required: true, message: "请填写名称", trigger: "blur" }],
-  date: [{ required: true, message: "请选择项目时间", trigger: "blur" }],
+  // date: [{ required: true, message: "请选择项目时间", trigger: "blur" }],
 };
-function goToBack() {
-  router.push({ name: "roadIndex" });
-}
-function onSelectChange(selectedRowKeys) {
-  console.log("selectedRowKeys changed: ", selectedRowKeys);
-  selectedRowKeys = selectedRowKeys;
-}
-function getList() {
+function save() {
+  console.log(form)
+  console.log(form.value)
+  if (form.value && form.value.startDate) {
+    form.value.start_date = dayjs(form.value.startDate).format('YYYY-MM-DD')
+  }
+  if (form.value && form.value.endDate) {
+    form.value.end_date = dayjs(form.value.endDate).format('YYYY-MM-DD')
+  }
+  const _router = router
   const promise = new Promise((resolve, reject) => {
     axios({
-      method: "get",
+      method: "post",
       url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
-      params: {
-        page: 1,
-        page_size: 10,
-        // filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
-        // search: 'name'
-      },
+      data: form.value,
     }).then(function (data) {
-      resolve(data && data.data);
+      resolve(data);
     });
   });
 
   promise.then((result) => {
-    if (result) {
-      res.value = result.results;
-      console.log(res.value);
-    }
+    _router.push({ name: "road" });
+    // if (result) {
+    //   router.push({ name: "road" });
+    //   console.log(result);
+    // }
   });
 }
 onMounted(() => {
-  getList();
+  // getList();
 });
 </script>
 
@@ -78,12 +82,21 @@ onMounted(() => {
         />
       </a-form-item>
       <a-form-item ref="date" label="项目时间" name="date">
-        <a-date-picker v-model:value="form.start_date" placeholder="开始日期" />
+        <a-date-picker v-model:value="form.startDate" format="YYYY-MM-DD" placeholder="开始日期" />
         <a-date-picker
-          v-model:value="form.end_date"
+          v-model:value="form.endDate"
           placeholder="结束日期"
           class="ml-3"
         />
+      </a-form-item>
+      <a-form-item label="图片文件夹">
+        <a-input class="w-1/2" v-model:value="form.files_path" placeholder="请填写图片文件夹" />
+      </a-form-item>
+      <a-form-item label="图片宽度">
+        <a-input class="w-1/2" v-model:value="form.org_width" placeholder="请填写图片实际宽度" />
+      </a-form-item>
+      <a-form-item label="图片高度">
+        <a-input class="w-1/2" v-model:value="form.org_height" placeholder="请填写图片实际高度" />
       </a-form-item>
     </a-form>
     <a-row type="flex" justify="center" align="start" class="mt-3">
