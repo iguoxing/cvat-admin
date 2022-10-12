@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import dayjs from 'dayjs';
+import { useRouter, useRoute } from "vue-router";
 
 const columns = [
   {
@@ -28,10 +29,15 @@ const columns = [
     slots: { customRender: 'tags' },
   },
 ];
+
+
 const selectedRowKeys = ref([]);
 const res = ref([]);
-function newRoad() {
-  console.log("newRoad");
+const router = useRouter();
+
+function handleCreate() {
+  console.log("handleCreate");
+  router.push({ name: "personCreate" });
 }
 function onSelectChange(selectedRowKeys) {
   console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -73,7 +79,7 @@ onMounted(() => {
         <a-page-header title="人员管理" sub-title="Person Manage" />
       </a-col>
       <a-col>
-        <a-button type="primary" @click="newRoad"> 新建路线 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新建人员 </a-button>
       </a-col>
     </a-row>
     <a-table
