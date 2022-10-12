@@ -42,6 +42,12 @@ const router = createRouter({
           component: () => import("../components/road/New.vue"),
           // breadcrumb: false,
         },
+        {
+          path: "edit/:id",
+          name: "roadEdit",
+          component: () => import("../components/road/New.vue"),
+          // breadcrumb: false,
+        },
       ],
     },
     {

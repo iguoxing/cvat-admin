@@ -11,9 +11,12 @@
 @tailwind components;
 @tailwind utilities;
 
-button, [type='button'], [type='reset'], [type='submit'] {
+button.ant-btn-primary{
   background-color: #1890ff;
 }
+/* button, [type='button'], [type='reset'], [type='submit'] {
+  background-color: #1890ff;
+} */
 .ant-page-header {
   padding-left: 0;
   padding-top: 0;

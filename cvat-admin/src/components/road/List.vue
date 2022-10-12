@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-06 10:58:37
+ * @LastEditTime: 2022-10-12 18:01:50
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -51,12 +51,14 @@ const columns = [
   },
   {
     title: "操作",
-    dataIndex: "end_date",
+    dataIndex: "operate",
+    slots: { customRender: "operate" },
   },
 ];
 const selectedRowKeys = ref([]);
 const res = ref([]);
 const router = useRouter();
+const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 
 function newRoad() {
   router.push({ name: "roadNew" });
@@ -64,15 +66,29 @@ function newRoad() {
 function onSelectChange(selectedRowKeys) {
   console.log("selectedRowKeys changed: ", selectedRowKeys);
   selectedRowKeys = selectedRowKeys;
-};
+}
+
+function edit(item) {
+  // console.log("item: ", item, );
+  router.push('edit/' + item.id);
+}
+
+function handleTableChange(page) {
+  console.log("pagination: ", page );
+  if (page && page.current) {
+    pagination.value.current = page.current;
+  }
+  // debugger
+  getList()
+}
 function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
       params: {
-        page: 1,
-        page_size: 10,
+        page: pagination.value.current || 1,
+        page_size: pagination.value.pageSize || 10,
         // filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
         // search: 'name'
       },
@@ -84,6 +100,7 @@ function getList() {
   promise.then((result) => {
     if (result) {
       res.value = result.results;
+      pagination.value.total = result.count
       console.log(res.value);
     }
   });
@@ -112,14 +129,18 @@ onMounted(() => {
       }"
       :row-key="(record) => 'row' + record.id"
       :data-source="res"
-      :pagination="false"
+      :pagination="pagination"
       :bordered="true"
+      @change="handleTableChange"
     >
       <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}
       </template>
       <template #station_list="{ record }">
         {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
+      </template>
+      <template #operate="{ record }">
+        <a @click="edit(record)">编辑</a>
       </template>
     </a-table>
   </div>

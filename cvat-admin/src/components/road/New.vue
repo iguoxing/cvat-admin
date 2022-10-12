@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-12 10:02:41
+ * @LastEditTime: 2022-10-12 17:44:50
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -12,9 +12,13 @@ import type { Dayjs } from "dayjs";
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
+const route = useRoute();
+// console.log("router: ", router);
+console.log("route: ", route);
+console.log("route params: ", route.params);
+const pid = route.params && route.params.id;
 
-const selectedRowKeys = ref([]);
-const form = ref({
+const selectedRowKeys = ref([]);let form = ref({
   name: "test",
   describe: "测试",
   start_date: "",
@@ -29,6 +33,40 @@ const rules = {
   name: [{ required: true, message: "请填写名称", trigger: "blur" }],
   // date: [{ required: true, message: "请选择项目时间", trigger: "blur" }],
 };
+
+function getProjectInfo() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result) => {
+    if (result) {
+      form.value = result;
+      form.value.startDate = dayjs(result.start_date || "");
+      form.value.endDate = dayjs(result.end_date || "");
+      form.value = {
+        name: result.name,
+        describe: result.describe,
+        start_date: result.start_date,
+        startDate: dayjs(result.start_date || ""),
+        endDate: dayjs(result.end_date || ""),
+        end_date: result.end_date,
+        files_path: result.files_path,
+        org_width: result.org_width,
+        org_height: result.org_height,
+      }
+      
+    }
+  });
+}
+
+pid && getProjectInfo();
+
 function save() {
   console.log(form)
   console.log(form.value)
@@ -38,7 +76,6 @@ function save() {
   if (form.value && form.value.endDate) {
     form.value.end_date = dayjs(form.value.endDate).format('YYYY-MM-DD')
   }
-  const _router = router
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "post",
@@ -50,12 +87,15 @@ function save() {
   });
 
   promise.then((result) => {
-    _router.push({ name: "road" });
+    router.push({ name: "road" });
     // if (result) {
     //   router.push({ name: "road" });
     //   console.log(result);
     // }
   });
+}
+function cancel() {
+  router.go(-1);
 }
 onMounted(() => {
   // getList();
@@ -73,7 +113,7 @@ onMounted(() => {
       :rules="rules"
     >
       <a-form-item ref="name" label="名称" name="name">
-        <a-input v-model:value="form.name" placeholder="请填写名称" />
+        <a-input v-model:value="form.name" placeholder="请填写名称" class="w-1/2"/>
       </a-form-item>
       <a-form-item ref="company" label="描述" name="company">
         <a-textarea
@@ -90,7 +130,7 @@ onMounted(() => {
         />
       </a-form-item>
       <a-form-item label="图片文件夹">
-        <a-input class="w-1/2" v-model:value="form.files_path" placeholder="请填写图片文件夹" />
+        <a-input v-model:value="form.files_path" placeholder="请填写图片文件夹"/>
       </a-form-item>
       <a-form-item label="图片宽度">
         <a-input class="w-1/2" v-model:value="form.org_width" placeholder="请填写图片实际宽度" />
