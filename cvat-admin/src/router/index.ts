@@ -63,6 +63,12 @@ const router = createRouter({
           component: () => import("../components/person/List.vue"),
           // breadcrumb: false,
         },
+        {
+          path: "Create",
+          name: "personCreate",
+          component: () => import("../components/person/Create.vue"),
+          // breadcrumb: false,
+        },
       ],
     },
     {
