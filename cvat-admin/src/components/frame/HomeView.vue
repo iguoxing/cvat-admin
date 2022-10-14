@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-03 10:48:40
+ * @LastEditTime: 2022-10-13 15:52:22
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -178,7 +178,6 @@ const homeData = {
     <a-card title="路线信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="columns"
-        :row-key="(record) => 'row' + homeData.process.id"
         :data-source="homeData.process"
         :pagination="false"
         :bordered="true"
@@ -212,7 +211,6 @@ const homeData = {
     <a-card title="桩号信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="stationColumns"
-        :row-key="(record) => 'row' + homeData.process.id"
         :data-source="homeData.process"
         :pagination="false"
         :bordered="true"
@@ -246,7 +244,6 @@ const homeData = {
     <a-card title="标注统计信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="tagColumns"
-        :row-key="(record) => 'row' + homeData.process.id"
         :data-source="homeData.process"
         :pagination="false"
         :bordered="true"

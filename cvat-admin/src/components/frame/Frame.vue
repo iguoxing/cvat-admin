@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-06 09:56:15
+ * @LastEditTime: 2022-10-13 16:30:32
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -12,6 +12,7 @@ import { message } from "ant-design-vue";
 import {
   HomeOutlined,
   ProjectOutlined,
+  UnorderedListOutlined,
   TeamOutlined,
   UserOutlined,
   DownOutlined,
@@ -49,6 +50,9 @@ watch(selectedKeys,(val,old) => {
   if (val[0] == '200') {
     router.push({ name: "road" });
   }
+  if (val[0] == '300') {
+    router.push({ name: "task" });
+  }
   if (val[0] == '400') {
     router.push({ name: "person" });
   }
@@ -65,6 +69,9 @@ function setMenu(val: string) {
     case "/road/index":
       k = "200";
       break;
+    case "/task/index":
+      k = "300";
+      break;
     case "/person/index":
       k = "400";
       break;
@@ -74,31 +81,31 @@ function setMenu(val: string) {
 }
 
 function exitLogin() {
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: "post",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/auth/login",
-      data: {
-        username: account.value,
-        password: password.value,
-      },
-    }).then(function (data) {
-      resolve(data && data.data);
-    });
-  });
+  // const promise = new Promise((resolve, reject) => {
+  //   axios({
+  //     method: "post",
+  //     url: import.meta.env.VITE_APP_BASE_URL + "api/auth/logout",
+  //     data: {
+  //       username: account.value,
+  //       password: password.value,
+  //     },
+  //   }).then(function (data) {
+  //     resolve(data && data.data);
+  //   });
+  // });
 
-  promise.then((result) => {
-    if (result && result.key) {
-      localStorage.token = result.key;
-      router.push({ name: "home" });
-    }
-  });
+  // promise.then((result: any) => {
+  //   if (result && result.key) {
+  //     localStorage.token = result.key;
+  //     router.push({ name: "home" });
+  //   }
+  // });
 }
 </script>
 <template>
   <a-layout id="components-layout-demo-custom-trigger" class="frame">
+    <!-- v-model:collapsed="collapsed" -->
     <a-layout-sider
-      v-model:collapsed="collapsed"
       :trigger="null"
       collapsible
       class="sideMenu"
@@ -112,15 +119,19 @@ function exitLogin() {
       >
         <a-menu-item key="100">
           <HomeOutlined />
-          <span :menu="key">主页</span>
+          <span :menu="100">主页</span>
         </a-menu-item>
         <a-menu-item key="200">
           <ProjectOutlined />
-          <span :menu="key">路线管理</span>
+          <span :menu="200">路线管理</span>
+        </a-menu-item>
+        <a-menu-item key="300">
+          <UnorderedListOutlined />
+          <span :menu="300">桩号管理</span>
         </a-menu-item>
         <a-menu-item key="400">
           <TeamOutlined />
-          <span :menu="key">人员管理</span>
+          <span :menu="400">人员管理</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -158,7 +169,7 @@ function exitLogin() {
       </a-layout-header>
       <a-layout-content class="layout-content">
         <transition name="fade-transform" mode="out-in">
-          <router-view :key="key" v-if="isRouterAlive" />
+          <router-view v-if="isRouterAlive" />
         </transition>
       </a-layout-content>
     </a-layout>

@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-09-30 11:03:34
+ * @LastEditTime: 2022-10-13 16:26:33
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -47,6 +47,8 @@ const account = ref(null);
 const password = ref(null);
 const router = useRouter();
 
+console.log(import.meta.env)
+
 function goTo() {
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -61,7 +63,7 @@ function goTo() {
     });
   });
 
-  promise.then((result) => {
+  promise.then((result: any) => {
     if (result && result.key) {
       localStorage.token = result.key;
       router.push({ name: "home" });

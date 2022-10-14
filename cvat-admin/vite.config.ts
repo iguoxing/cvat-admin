@@ -6,6 +6,8 @@ const port = 5173;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: "./", // 开发环境
+  // base: "./", // 开发环境
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

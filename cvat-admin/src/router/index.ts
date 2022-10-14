@@ -1,9 +1,10 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import Login from "../components/views/Login.vue";
 import frame from "../components/frame/Frame.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  // history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
@@ -47,6 +48,26 @@ const router = createRouter({
           name: "roadEdit",
           component: () => import("../components/road/New.vue"),
           // breadcrumb: false,
+        },
+        {
+          path: "station/:id",
+          name: "stationNew",
+          component: () => import("../components/task/New.vue"),
+          // breadcrumb: false,
+        },
+      ],
+    },
+    {
+      // task management
+      path: "/task",
+      component: frame,
+      name: "task",
+      redirect: "/task/index",
+      children: [
+        {
+          path: "index",
+          name: "taskIndex",
+          component: () => import("../components/task/List.vue"),
         },
       ],
     },

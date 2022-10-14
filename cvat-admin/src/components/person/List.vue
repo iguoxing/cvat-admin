@@ -30,8 +30,6 @@ const columns = [
   },
 ];
 
-
-const selectedRowKeys = ref([]);
 const res = ref([]);
 const router = useRouter();
 
@@ -39,10 +37,6 @@ function handleCreate() {
   console.log("handleCreate");
   router.push({ name: "personCreate" });
 }
-function onSelectChange(selectedRowKeys) {
-  console.log("selectedRowKeys changed: ", selectedRowKeys);
-  selectedRowKeys = selectedRowKeys;
-};
 function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -59,7 +53,7 @@ function getList() {
     });
   });
 
-  promise.then((result) => {
+  promise.then((result: any) => {
     if (result) {
       res.value = result.results;
       console.log(res.value);
@@ -84,11 +78,6 @@ onMounted(() => {
     </a-row>
     <a-table
       :columns="columns"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys.value,
-        onChange: onSelectChange,
-      }"
-      :row-key="(record) => 'row' + record.id"
       :data-source="res"
       :pagination="false"
       :bordered="true"

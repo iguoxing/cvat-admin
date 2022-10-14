@@ -1,7 +1,7 @@
 /*
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:02:16
- * @LastEditTime: 2022-10-02 07:31:16
+ * @LastEditTime: 2022-10-13 15:46:10
  * @FilePath: /cvat-admin/src/stores/interface.ts
  * @Description: file information
  */
@@ -12,14 +12,17 @@ import { message } from "ant-design-vue";
 // 添加请求拦截器
 axios.interceptors.request.use(
   function (config) {
-    localStorage.token && (config.headers.Authorization = "Token " + localStorage.token);
-    // config.headers.Authorization = "Bearer " + localStorage.token;
-    config.headers["Cache-Control"] = "no-cache";
-    if (/get/i.test(config.method)) {
-      // 判断get请求
-      config.params = config.params || {};
-      config.params.t = Date.parse(new Date()) / 1000; // 添加时间戳
+    if (localStorage.token && config.headers) {
+       config.headers.Authorization = "Token " + localStorage.token
     }
+    // localStorage.token && (config.headers.Authorization = "Token " + localStorage.token);
+    // config.headers.Authorization = "Bearer " + localStorage.token;
+    // config.headers["Cache-Control"] = "no-cache";
+    // if (/get/i.test(config.method)) {
+    //   // 判断get请求
+    //   config.params = config.params || {};
+    //   config.params.t = Date.parse(new Date()) / 1000; // 添加时间戳
+    // }
     return config;
   },
   function (error) {
@@ -35,11 +38,11 @@ axios.interceptors.response.use(
     if (response && response.data && response.data.code == 200) {
       return response;
     }
-    if (response && response.data && response.data.code == 403) {
-      location.href = process.env.VUE_APP_HOME_URL;
-      localStorage.removeItem("token");
-      message.error(response.data.message);
-    }
+    // if (response && response.data && response.data.code == 403) {
+    //   location.href = process.env.VUE_APP_HOME_URL;
+    //   localStorage.removeItem("token");
+    //   message.error(response.data.message);
+    // }
     return response;
   },
   function (error) {

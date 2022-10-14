@@ -1,12 +1,13 @@
 <!--
  * @Author: ArdenZhao
- * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-13 14:27:41
- * @FilePath: /cvat-admin/src/components/road/New.vue
+ * @Date: 2022-10-13 14:21:27
+ * @LastEditTime: 2022-10-13 16:11:58
+ * @FilePath: /cvat-admin/src/components/task/New.vue
  * @Description: file information
 -->
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import { PlusOutlined } from "@ant-design/icons-vue";
 import axios from "../../stores/interface";
 import type { Dayjs } from "dayjs";
 import dayjs from 'dayjs';
@@ -17,6 +18,7 @@ const route = useRoute();
 console.log("route: ", route);
 console.log("route params: ", route.params);
 const pid = route.params && route.params.id;
+const projectTitle = '新建桩号' + (JSON.parse(localStorage.projectInfo).name ? ('-' + JSON.parse(localStorage.projectInfo).name) : '')
 
 const selectedRowKeys = ref([]);let form = ref({
   name: "test",
@@ -60,7 +62,6 @@ function getProjectInfo() {
         org_width: result.org_width,
         org_height: result.org_height,
       }
-      
     }
   });
 }
@@ -94,6 +95,9 @@ function save() {
     // }
   });
 }
+function add() {
+  console.log('add');
+}
 function cancel() {
   router.go(-1);
 }
@@ -104,7 +108,14 @@ onMounted(() => {
 
 <template>
   <div>
-    <a-page-header title="维护路线" @back="cancel" />
+    <a-page-header :title="projectTitle" @back="cancel" />
+    <a-row type="flex" justify="center" align="start" class="mt-3">
+      <a-col>
+        <a-button type="primary" @click="add" class="mb-3">
+          <PlusOutlined />
+        </a-button>
+      </a-col>
+    </a-row>
     <a-form
       class="margin-top-1"
       :model="form"
