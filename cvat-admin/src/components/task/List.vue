@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-10-13 16:13:51
+ * @LastEditTime: 2022-10-14 21:09:57
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -77,9 +77,6 @@ const res = ref([]);
 const router = useRouter();
 const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 
-function newRoad() {
-  router.push({ name: "roadNew" });
-}
 function onSelectChange(selectedKeys: []) {
   console.log("selectedRowKeys changed: ", selectedKeys);
   selectedRowKeys.value = selectedKeys;
@@ -130,11 +127,8 @@ onMounted(() => {
 <template>
   <div>
     <a-row type="flex" justify="between" align="start">
-      <a-col flex="1 1 200px">
-        <a-page-header title="桩号管理" sub-title="Station Manage" />
-      </a-col>
       <a-col>
-        <!-- <a-button type="primary" @click="newRoad"> 新建桩号 </a-button> -->
+        <a-page-header title="桩号管理" sub-title="Station Manage" />
       </a-col>
     </a-row>
     <!-- :row-selection="{

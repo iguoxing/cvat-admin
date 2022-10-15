@@ -12,6 +12,8 @@
 @tailwind utilities;
 
 button.ant-btn-primary{
+  display: inline-flex;
+  align-items: center;
   background-color: #1890ff;
 }
 /* button, [type='button'], [type='reset'], [type='submit'] {

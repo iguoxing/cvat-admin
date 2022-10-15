@@ -50,6 +50,12 @@ const router = createRouter({
           // breadcrumb: false,
         },
         {
+          path: "stationlist/:id",
+          name: "projectStationList",
+          component: () => import("../components/road/TaskList.vue"),
+          // breadcrumb: false,
+        },
+        {
           path: "station/:id",
           name: "stationNew",
           component: () => import("../components/task/New.vue"),
