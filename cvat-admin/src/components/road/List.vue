@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-15 11:26:51
+ * @LastEditTime: 2022-10-16 19:25:13
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -157,8 +157,9 @@ onMounted(() => {
         <a @click="edit(record)">编辑</a>
         <a-divider type="vertical" />
         <a @click="stationList(record)">桩号列表</a>
-        <a-divider type="vertical" />
-        <a @click="newStation(record)">新建桩号</a>      </template>
+        <!-- <a-divider type="vertical" />
+        <a @click="newStation(record)">新建桩号</a> -->
+      </template>
     </a-table>
   </div>
 </template>

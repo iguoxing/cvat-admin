@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-13 14:27:41
+ * @LastEditTime: 2022-10-16 19:52:42
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -14,11 +14,12 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 // console.log("router: ", router);
-console.log("route: ", route);
-console.log("route params: ", route.params);
+// console.log("route: ", route);
+// console.log("route params: ", route.params);
 const pid = route.params && route.params.id;
 
-const selectedRowKeys = ref([]);let form = ref({
+const selectedRowKeys = ref([]);
+let form = ref({
   name: "test",
   describe: "测试",
   start_date: "",
@@ -47,20 +48,17 @@ function getProjectInfo() {
   promise.then((result: any) => {
     if (result) {
       form.value = result;
-      form.value.startDate = dayjs(result.start_date || "");
-      form.value.endDate = dayjs(result.end_date || "");
       form.value = {
         name: result.name,
         describe: result.describe,
         start_date: result.start_date,
-        startDate: dayjs(result.start_date || ""),
-        endDate: dayjs(result.end_date || ""),
+        startDate: result.start_date ? dayjs(result.start_date): dayjs(),
+        endDate: result.start_date ? dayjs(result.end_date): dayjs(),
         end_date: result.end_date,
-        files_path: result.files_path,
+        files_path: result.files_path ? result.files_path : "/hzf_test/",
         org_width: result.org_width,
         org_height: result.org_height,
       }
-      
     }
   });
 }
