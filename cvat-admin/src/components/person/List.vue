@@ -28,6 +28,11 @@ const columns = [
     dataIndex: "groups",
     slots: { customRender: 'tags' },
   },
+  {
+    title: "操作",
+    dataIndex: "operate",
+    slots: { customRender: "operate" },
+  },
 ];
 
 const res = ref([]);
@@ -60,6 +65,17 @@ function getList() {
     }
   });
 };
+
+function edit(item: { id: string; }) {
+  console.log('--', item);
+  router.push({
+    name: "personEdit",
+    params: {
+      name: 'Jack'
+    },
+  });
+}
+
 onMounted(() => {
   getList()
 });
@@ -94,6 +110,9 @@ onMounted(() => {
       </template>
       <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}
+      </template>
+      <template #operate="{ record }">
+        <a @click="edit(record)">编辑</a>
       </template>
     </a-table>
   </div>

@@ -91,8 +91,14 @@ const router = createRouter({
           // breadcrumb: false,
         },
         {
-          path: "Create",
+          path: "create",
           name: "personCreate",
+          component: () => import("../components/person/Create.vue"),
+          // breadcrumb: false,
+        },
+        {
+          path: "personEdit",
+          name: "personEdit",
           component: () => import("../components/person/Create.vue"),
           // breadcrumb: false,
         },
