@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-10-14 21:09:57
+ * @LastEditTime: 2022-10-16 10:17:40
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -9,6 +9,8 @@
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
+import dayjs from "dayjs";
+
 const columns = [
   {
     title: "任务ID",
@@ -49,6 +51,7 @@ const columns = [
   {
     title: "创建时间",
     dataIndex: "created_date",
+    slots: { customRender: "created_date" },
   },
   {
     title: "状态",
@@ -82,12 +85,12 @@ function onSelectChange(selectedKeys: []) {
   selectedRowKeys.value = selectedKeys;
 }
 
-function edit(item: { id: string; }) {
+function edit(item: { id: string }) {
   // console.log("item: ", item, );
   router.push("edit/" + item.id);
 }
 
-function handleTableChange(page: { current: number; }) {
+function handleTableChange(page: { current: number }) {
   console.log("pagination: ", page);
   if (page && page.current) {
     pagination.value.current = page.current;
@@ -142,10 +145,10 @@ onMounted(() => {
       :bordered="true"
       @change="handleTableChange"
     >
-      <!-- <template #complete_task_num="{ record }">
-        {{record.complete_task_num}} / {{record.all_task_num}}
+      <template #created_date="{ record }">
+        {{ dayjs(record.created_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
-      <template #station_list="{ record }">
+      <!-- <template #station_list="{ record }">
         {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
       </template>
       <template #operate="{ record }">
