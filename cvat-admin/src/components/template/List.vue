@@ -1,8 +1,8 @@
 <!--
  * @Author: ArdenZhao
- * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-10-17 18:14:03
- * @FilePath: /cvat-admin/src/components/road/TaskList.vue
+ * @Date: 2022-10-17 18:27:47
+ * @LastEditTime: 2022-10-17 18:54:56
+ * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
 <script setup lang="ts">
@@ -16,75 +16,39 @@ import type { FormInstance } from "ant-design-vue";
 const route = useRoute();
 
 const pid = route.params && route.params.id;
-const projectTitle =
-  "桩号列表" +
-  (JSON.parse(localStorage.projectInfo).name
-    ? "-" + JSON.parse(localStorage.projectInfo).name
-    : "");
+let labelType = {
+  bbox: "矩形",
+  ellipse: "椭圆",
+  polyine: "多边形",
+  tag: "标签",
+};
 const columns = [
   {
-    title: "任务ID",
+    title: "模板ID",
     dataIndex: "id",
   },
   {
-    title: "任务名称",
+    title: "模板名称",
     dataIndex: "name",
   },
   {
-    title: "路线名称",
-    dataIndex: "project_name",
-  },
-  // {
-  //   title: "开始时间",
-  //   dataIndex: "project_start_date",
-  // },
-  // {
-  //   title: "结束时间",
-  //   dataIndex: "project_end_date",
-  // },
-  {
-    title: "识别人员",
-    dataIndex: "wk_assignee",
-    slots: { customRender: "wk_assignee" },
+    title: "内容",
+    dataIndex: "content",
   },
   {
-    title: "核实人员",
-    dataIndex: "qa_assignee",
-    slots: { customRender: "qa_assignee" },
+    title: "标签",
+    dataIndex: "labels",
+    slots: { customRender: "labels" },
   },
   // {
-  //   title: "开始桩号",
-  //   dataIndex: "start_station",
+  //   title: "创建时间",
+  //   dataIndex: "created_date",
+  //   slots: { customRender: "created_date" },
   // },
-  // {
-  //   title: "结束桩号",
-  //   dataIndex: "end_station",
-  // },
-  {
-    title: "创建时间",
-    dataIndex: "created_date",
-    slots: { customRender: "created_date" },
-  },
   {
     title: "更新时间",
     dataIndex: "updated_date",
     slots: { customRender: "updated_date" },
-  },
-  {
-    title: "状态",
-    dataIndex: "status",
-  },
-  // {
-  //   title: "job信息",
-  //   dataIndex: "segments",
-  // },
-  {
-    title: "已标注图片数",
-    dataIndex: "frame_worked",
-  },
-  {
-    title: "所有图片数目",
-    dataIndex: "size",
   },
   {
     title: "操作",
@@ -122,7 +86,7 @@ function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid + "/tasks",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/templates",
       params: {
         page: pagination.value.current || 1,
         page_size: pagination.value.pageSize || 10,
@@ -142,29 +106,9 @@ function getList() {
     }
   });
 }
-function getTagList() {
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/users",
-    }).then(function (data) {
-      resolve(data && data.data);
-    });
-  });
-
-  promise.then((result: any) => {
-    if (result) {
-      tagList.value = result.results;
-      console.log(tagList.value);
-    }
-  });
-}
-function cancel() {
-  router.go(-1);
-}
 
 function initTask() {
-  dynamicValidateForm.domains = []
+  dynamicValidateForm.domains = [];
   dynamicValidateForm.domains.push({
     id: undefined,
     name: "",
@@ -282,9 +226,16 @@ const handleOk = () => {
     }
   });
 };
-function editClick(item: { id: any; name: any; start_station: any; end_station: any; wk_assignee: { id: any; }; qa_assignee: { id: any; }; }){
+function editClick(item: {
+  id: any;
+  name: any;
+  start_station: any;
+  end_station: any;
+  wk_assignee: { id: any };
+  qa_assignee: { id: any };
+}) {
   editvisible.value = true;
-  dynamicValidateForm.domains = []
+  dynamicValidateForm.domains = [];
   dynamicValidateForm.domains.push({
     id: item.id,
     name: item.name,
@@ -295,7 +246,7 @@ function editClick(item: { id: any; name: any; start_station: any; end_station: 
     labels: [],
   });
 }
-function handlEditeOk(){
+function handlEditeOk() {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "PATCH",
@@ -318,7 +269,6 @@ function handlEditeOk(){
 }
 onMounted(() => {
   getList();
-  getTagList();
 });
 </script>
 
@@ -326,10 +276,10 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 300px">
-        <a-page-header :title="projectTitle" @back="cancel" />
+        <a-page-header title="标签模板" sub-title="Tag Template" />
       </a-col>
       <a-col>
-        <a-button type="primary" @click="newStation"> 新建桩号 </a-button>
+        <!-- <a-button type="primary" @click="newStation"> 新建模板 </a-button> -->
       </a-col>
     </a-row>
     <!-- :row-selection="{
@@ -349,35 +299,20 @@ onMounted(() => {
       <template #updated_date="{ record }">
         {{ dayjs(record.updated_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
-      <template #wk_assignee="{ record }">
-        {{ record.wk_assignee && record.wk_assignee.username }}
-        <!-- <a-select
-          v-model:value="editForm.qa_assignee_id"
-          placeholder="请选择"
-          :allowClear="true"
-          :style="inputStyle"
-        >
-          <a-select-option
-            :value="record.wk_assignee.id"
-            v-for="(item, i) in tagList"
-            :key="'qa' + i"
-            >{{ item.username }}</a-select-option
-          >
-        </a-select> -->
+      <template #labels="{ record }">
+        <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
+          {{ tag.name }} 【{{ tag.color }}】<a-tag :color="tag.color">{{
+            tag.color
+          }}</a-tag>
+          【{{ labelType[tag.type] }}】
+        </a-row>
       </template>
       <template #qa_assignee="{ record }">
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <a @click="editClick(record)">编辑</a>
+        <!-- <a @click="editClick(record)">编辑</a> -->
       </template>
-      <!-- <template #complete_task_num="{ record }">
-        {{record.complete_task_num}} / {{record.all_task_num}}
-      </template>
-      <template #station_list="{ record }">
-        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
-      </template>
-       -->
     </a-table>
     <a-modal
       v-model:visible="visible"

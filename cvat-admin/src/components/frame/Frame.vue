@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-13 16:30:32
+ * @LastEditTime: 2022-10-17 18:41:36
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -13,6 +13,7 @@ import {
   HomeOutlined,
   ProjectOutlined,
   UnorderedListOutlined,
+  TagsOutlined,
   TeamOutlined,
   UserOutlined,
   DownOutlined,
@@ -56,6 +57,9 @@ watch(selectedKeys,(val,old) => {
   if (val[0] == '400') {
     router.push({ name: "person" });
   }
+  if (val[0] == '500') {
+    router.push({ name: "template" });
+  }
 });
 
 function setMenu(val: string) {
@@ -74,6 +78,9 @@ function setMenu(val: string) {
       break;
     case "/person/index":
       k = "400";
+      break;
+    case "/template/index":
+      k = "500";
       break;
   }
   subMenu.value = m;
@@ -128,6 +135,10 @@ function exitLogin() {
         <a-menu-item key="300">
           <UnorderedListOutlined />
           <span :menu="300">桩号管理</span>
+        </a-menu-item>
+        <a-menu-item key="500">
+          <TagsOutlined />
+          <span :menu="500">标签模板</span>
         </a-menu-item>
         <a-menu-item key="400">
           <TeamOutlined />
