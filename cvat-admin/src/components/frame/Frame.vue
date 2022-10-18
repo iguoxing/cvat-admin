@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-17 18:41:36
+ * @LastEditTime: 2022-10-18 17:28:36
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -88,25 +88,19 @@ function setMenu(val: string) {
 }
 
 function exitLogin() {
-  // const promise = new Promise((resolve, reject) => {
-  //   axios({
-  //     method: "post",
-  //     url: import.meta.env.VITE_APP_BASE_URL + "api/auth/logout",
-  //     data: {
-  //       username: account.value,
-  //       password: password.value,
-  //     },
-  //   }).then(function (data) {
-  //     resolve(data && data.data);
-  //   });
-  // });
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/auth/logout",
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
 
-  // promise.then((result: any) => {
-  //   if (result && result.key) {
-  //     localStorage.token = result.key;
-  //     router.push({ name: "home" });
-  //   }
-  // });
+  promise.then((result: any) => {
+    localStorage.removeItem("token")
+    router.push({ name: "login" });
+  });
 }
 </script>
 <template>

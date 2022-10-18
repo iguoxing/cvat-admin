@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-10-17 18:54:56
+ * @LastEditTime: 2022-10-18 17:06:16
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -16,12 +16,20 @@ import type { FormInstance } from "ant-design-vue";
 const route = useRoute();
 
 const pid = route.params && route.params.id;
-let labelType = {
-  bbox: "矩形",
+const labelType = {
+  // bbox: "矩形",
+  rectangle: "矩形",
   ellipse: "椭圆",
-  polyine: "多边形",
+  polyline: "多边形",
   tag: "标签",
 };
+const labelTypeArr = ref([
+  { id: "rectangle", name: "矩形" },
+  // { id: "bbox", name: "矩形" },
+  { id: "ellipse", name: "椭圆" },
+  { id: "polyline", name: "多边形" },
+  { id: "tag", name: "标签" },
+]);
 const columns = [
   {
     title: "模板ID",
@@ -106,17 +114,21 @@ function getList() {
     }
   });
 }
+let isEdit = false;
+let tid: string = ""
 
 function initTask() {
-  dynamicValidateForm.domains = [];
-  dynamicValidateForm.domains.push({
+  isEdit = false
+  preForm.value.name = "";
+  preForm.value.content = "";
+
+  dynamicValidateForm.labels = []
+  dynamicValidateForm.labels.push({
     id: undefined,
     name: "",
-    start_station: "",
-    end_station: "",
-    wk_assignee_id: null,
-    qa_assignee_id: null,
-    labels: [],
+    color: "#333",
+    type: "rectangle",
+    attributes: [],
   });
 }
 function newStation() {
@@ -148,22 +160,39 @@ const inputStyle = "width: 120px; margin-right: 8px";
 interface Domain {
   id: number | undefined;
   name: string;
-  start_station: string;
-  end_station: string;
-  wk_assignee_id: number | null;
-  qa_assignee_id: number | null;
-  labels: [];
+  color: string;
+  type: string;
+  attributes: [];
 }
-let dynamicValidateForm = reactive<{ domains: Domain[] }>({
-  domains: [
+// let dynamicValidateForm = ref({
+//   name: "",
+//   content: "",
+//   labels: [
+//     {
+//       id: undefined,
+//       name: "",
+//       color: "#333",
+//       type: "rectangle",
+//       attributes: [],
+//     },
+//   ],
+// });
+
+let preForm = ref({
+  name: "",
+  content: "",
+});
+
+let dynamicValidateForm = reactive<{
+  labels: Domain[];
+}>({
+  labels: [
     {
       id: undefined,
       name: "",
-      start_station: "",
-      end_station: "",
-      wk_assignee_id: null,
-      qa_assignee_id: null,
-      labels: [],
+      color: "#333",
+      type: "rectangle",
+      attributes: [],
     },
   ],
 });
@@ -176,95 +205,114 @@ let editForm = ref({
   qa_assignee_id: null,
   labels: [],
 });
-
 const addDomain = () => {
-  dynamicValidateForm.domains.push({
+  dynamicValidateForm.labels.push({
     id: undefined,
     name: "",
-    start_station: "",
-    end_station: "",
-    wk_assignee_id: null,
-    qa_assignee_id: null,
-    labels: [],
+    color: "#333",
+    type: "rectangle",
+    attributes: [],
   });
+  console.log(preForm);
+  console.log(dynamicValidateForm);
+  // debugger;
 };
 let options = [...Array(25)].map((_, i) => ({ value: i + 1 }));
 const removeDomain = (item: Domain) => {
-  let index = dynamicValidateForm.domains.indexOf(item);
+  let index = dynamicValidateForm.labels.indexOf(item);
   if (index !== -1) {
-    dynamicValidateForm.domains.splice(index, 1);
+    dynamicValidateForm.labels.splice(index, 1);
   }
 };
-const handleOk = () => {
+function addTag(labels){
   visible.value = false;
-  dynamicValidateForm.domains.forEach((item) => {
-    item.name = item.start_station + "~" + item.end_station;
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/templates",
+      data: {
+        name: preForm.value.name,
+        content: preForm.value.content,
+        labels: labels,
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
   });
+
+  promise.then((result: any) => {
+    if (result) {
+      getList();
+    }
+  });
+}
+function editTag(labels){
+  visible.value = false;
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "PATCH",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/templates/" + tid,
+      data: {
+        name: preForm.value.name,
+        content: preForm.value.content,
+        labels: labels,
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      getList();
+    }
+  });
+}
+const handleOk = () => {
   formRef.value
     .validate()
     .then(() => {
-      console.log("values", dynamicValidateForm.domains);
+      console.log("values", dynamicValidateForm.labels);
     })
     .catch((error) => {
       console.log("error", error);
     });
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: "PATCH",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
-      data: {
-        tasks: dynamicValidateForm.domains,
-      },
-    }).then(function (data) {
-      resolve(data && data.data);
-    });
-  });
-
-  promise.then((result: any) => {
-    if (result) {
-      getList();
-    }
-  });
+  if (!isEdit) {
+    addTag(dynamicValidateForm.labels);
+  } else {
+    editTag(dynamicValidateForm.labels);
+  }
 };
-function editClick(item: {
-  id: any;
-  name: any;
-  start_station: any;
-  end_station: any;
-  wk_assignee: { id: any };
-  qa_assignee: { id: any };
-}) {
-  editvisible.value = true;
-  dynamicValidateForm.domains = [];
-  dynamicValidateForm.domains.push({
-    id: item.id,
-    name: item.name,
-    start_station: item.start_station,
-    end_station: item.end_station,
-    wk_assignee_id: item.wk_assignee && item.wk_assignee.id,
-    qa_assignee_id: item.qa_assignee && item.qa_assignee.id,
-    labels: [],
+function editClick(item) {
+  isEdit = true
+  tid = item.id
+  visible.value = true;
+  // editvisible.value = true;
+  preForm.value.name = item.name;
+  preForm.value.content = item.content;
+  dynamicValidateForm.labels = []
+  item.labels.forEach((item: any) => {
+    dynamicValidateForm.labels.push({
+      id: item.id,
+      name: item.name,
+      color: item.color,
+      attributes: item.attributes,
+      type: item.type,
+    });
   });
 }
-function handlEditeOk() {
+function deleteItem(item){
   const promise = new Promise((resolve, reject) => {
     axios({
-      method: "PATCH",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
-      data: {
-        id: pid,
-        tasks: dynamicValidateForm.domains,
-      },
+      method: "DELETE",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/templates/" + item.id,
     }).then(function (data) {
-      resolve(data && data.data);
+      resolve(data);
     });
   });
 
   promise.then((result: any) => {
-    if (result) {
-      editvisible.value = false;
-      getList();
-    }
+    getList();
   });
 }
 onMounted(() => {
@@ -279,7 +327,7 @@ onMounted(() => {
         <a-page-header title="标签模板" sub-title="Tag Template" />
       </a-col>
       <a-col>
-        <!-- <a-button type="primary" @click="newStation"> 新建模板 </a-button> -->
+        <a-button type="primary" @click="newStation"> 新建模板 </a-button>
       </a-col>
     </a-row>
     <!-- :row-selection="{
@@ -301,169 +349,102 @@ onMounted(() => {
       </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
-          {{ tag.name }} 【{{ tag.color }}】<a-tag :color="tag.color">{{
-            tag.color
-          }}</a-tag>
-          【{{ labelType[tag.type] }}】
+          {{ tag.name }} <a-tag :color="tag.color">{{ tag.color }}</a-tag> 【{{
+            labelType[tag.type]
+          }}】
         </a-row>
       </template>
       <template #qa_assignee="{ record }">
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <!-- <a @click="editClick(record)">编辑</a> -->
+        <a @click="editClick(record)">编辑</a>
+        <a-divider type="vertical" />
+        <a @click="deleteItem(record)">删除</a>
       </template>
     </a-table>
     <a-modal
       v-model:visible="visible"
-      title="维护桩号"
-      width="1000px"
+      title="维护模板"
+      width="800px"
       @ok="handleOk"
     >
       <a-form
         ref="formRef"
         name="dynamic_form_item"
-        :model="dynamicValidateForm"
         v-bind="formItemLayoutWithOutLabel"
       >
         <a-form-item
-          v-for="(domain, index) in dynamicValidateForm.domains"
-          :key="'d' + index"
+          ref="name"
+          label="名称"
+          name="name"
           v-bind="formItemLayout"
-          :label="'开始桩号'"
-          :name="['domains', index, 'value']"
         >
           <a-input
-            v-model:value="domain.start_station"
-            placeholder="输入开始桩号"
-            :style="inputStyle"
+            v-model:value="preForm.name"
+            placeholder="请填写名称"
+            class="w-1/2"
           />
-          <span>结束桩号: </span>
+        </a-form-item>
+        <a-form-item
+          ref="content"
+          label="描述"
+          name="content"
+          v-bind="formItemLayout"
+        >
           <a-input
-            v-model:value="domain.end_station"
-            placeholder="输入结束桩号"
+            v-model:value="preForm.content"
+            placeholder="请填写描述"
+            class="w-1/2"
+          />
+        </a-form-item>
+        <a-form-item
+          v-for="(domain, index) in dynamicValidateForm.labels"
+          :key="'do_' + index"
+          v-bind="formItemLayout"
+          :label="'标签名称'"
+          :name="['labels', index, 'value']"
+        >
+          <!-- <span>: </span> -->
+          <a-input
+            v-model:value="domain.name"
+            placeholder="输入名称"
             :style="inputStyle"
           />
-          <span>识别人员: </span>
+          <span>颜色: </span>
+          <a-input
+            v-model:value="domain.color"
+            type="color"
+            placeholder="选择颜色"
+            :style="inputStyle"
+          />
+          <span>类型: </span>
           <a-select
-            v-model:value="domain.wk_assignee_id"
+            v-model:value="domain.type"
             placeholder="请选择"
             :allowClear="true"
             :style="inputStyle"
           >
             <a-select-option
-              :value="item.id"
-              v-for="(item, i) in tagList"
-              :key="'wk' + i"
-              >{{ item.username }}</a-select-option
-            >
-          </a-select>
-          <span>核实人员: </span>
-          <a-select
-            v-model:value="domain.qa_assignee_id"
-            placeholder="请选择"
-            :allowClear="true"
-            :style="inputStyle"
-          >
-            <a-select-option
-              :value="item.id"
-              v-for="(item, i) in tagList"
-              :key="'qa' + i"
-              >{{ item.username }}</a-select-option
+              :value="label.id"
+              v-for="(label, i) in labelTypeArr"
+              :key="'lab_' + i"
+              >{{ label.name }}</a-select-option
             >
           </a-select>
           <MinusCircleOutlined
-            v-if="dynamicValidateForm.domains.length > 1"
+            v-if="dynamicValidateForm.labels.length > 1"
             class="dynamic-delete-button"
-            :disabled="dynamicValidateForm.domains.length === 1"
+            :disabled="dynamicValidateForm.labels.length === 1"
             @click="removeDomain(domain)"
           />
         </a-form-item>
         <a-form-item v-bind="formItemLayoutWithOutLabel">
           <a-button type="dashed" style="width: 60%" @click="addDomain">
             <PlusOutlined />
-            添加桩号
+            添加标签
           </a-button>
         </a-form-item>
-        <!-- <a-form-item v-bind="formItemLayoutWithOutLabel">
-          <a-button type="primary" html-type="submit" @click="submitForm"
-            >Submit</a-button
-          >
-        </a-form-item> -->
-      </a-form>
-    </a-modal>
-    <a-modal
-      v-model:visible="editvisible"
-      title="维护桩号"
-      width="1000px"
-      @ok="handlEditeOk"
-    >
-      <a-form
-        ref="formRef"
-        name="dynamic_form_item"
-        :model="dynamicValidateForm"
-        v-bind="formItemLayoutWithOutLabel"
-      >
-        <a-form-item
-          v-for="(domain, index) in dynamicValidateForm.domains"
-          :key="'do' + index"
-          v-bind="formItemLayout"
-          :label="'开始桩号'"
-          :name="['domains', index, 'value']"
-        >
-          <a-input
-            v-model:value="domain.start_station"
-            placeholder="输入开始桩号"
-            :disabled="true"
-            :style="inputStyle"
-          />
-          <span>结束桩号: </span>
-          <a-input
-            v-model:value="domain.end_station"
-            :disabled="true"
-            placeholder="输入结束桩号"
-            :style="inputStyle"
-          />
-          <span>识别人员: </span>
-          <a-select
-            v-model:value="domain.wk_assignee_id"
-            placeholder="请选择"
-            :allowClear="true"
-            :style="inputStyle"
-          >
-            <a-select-option
-              :value="item.id"
-              v-for="(item, i) in tagList"
-              :key="'wk' + i"
-              >{{ item.username }}</a-select-option
-            >
-          </a-select>
-          <span>核实人员: </span>
-          <a-select
-            v-model:value="domain.qa_assignee_id"
-            placeholder="请选择"
-            :allowClear="true"
-            :style="inputStyle"
-          >
-            <a-select-option
-              :value="item.id"
-              v-for="(item, i) in tagList"
-              :key="'qa' + i"
-              >{{ item.username }}</a-select-option
-            >
-          </a-select>
-          <MinusCircleOutlined
-            v-if="dynamicValidateForm.domains.length > 1"
-            class="dynamic-delete-button"
-            :disabled="dynamicValidateForm.domains.length === 1"
-            @click="removeDomain(domain)"
-          />
-        </a-form-item>
-        <!-- <a-form-item v-bind="formItemLayoutWithOutLabel">
-          <a-button type="primary" html-type="submit" @click="submitForm"
-            >Submit</a-button
-          >
-        </a-form-item> -->
       </a-form>
     </a-modal>
   </div>

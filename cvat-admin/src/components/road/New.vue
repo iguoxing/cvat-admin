@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-17 18:42:36
+ * @LastEditTime: 2022-10-18 17:14:27
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -20,9 +20,10 @@ const pid = route.params && route.params.id;
 
 let templateList = ref([]);
 let labelType = ref([
-  { id: "bbox", name: "矩形" },
+  { id: "rectangle", name: "矩形" },
+  // { id: "bbox", name: "矩形" },
   { id: "ellipse", name: "椭圆" },
-  { id: "polyine", name: "多边形" },
+  { id: "polyline", name: "多边形" },
   { id: "tag", name: "标签" },
 ]);
 let form = ref({
@@ -73,6 +74,38 @@ function getProjectInfo() {
 
 pid && getProjectInfo();
 
+function addRoad(road){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
+      data: road,
+    }).then(function (data) {
+      resolve(data);
+    });
+  });
+
+  promise.then((result) => {
+    router.push({ name: "road" });
+  });
+}
+
+function editRoad(road){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "PATCH",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
+      data: road,
+    }).then(function (data) {
+      resolve(data);
+    });
+  });
+
+  promise.then((result) => {
+    router.push({ name: "road" });
+  });
+}
+
 function save() {
   console.log(form);
   console.log(form.value);
@@ -82,23 +115,12 @@ function save() {
   if (form.value && form.value.endDate) {
     form.value.end_date = dayjs(form.value.endDate).format("YYYY-MM-DD");
   }
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: "post",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
-      data: form.value,
-    }).then(function (data) {
-      resolve(data);
-    });
-  });
-
-  promise.then((result) => {
-    router.push({ name: "road" });
-    // if (result) {
-    //   router.push({ name: "road" });
-    //   console.log(result);
-    // }
-  });
+  if (pid) {
+    editRoad(form.value);
+  } else {
+    addRoad(form.value);
+  }
+  
 }
 
 function getTemplateList() {
@@ -119,9 +141,21 @@ function getTemplateList() {
 }
 
 function chooseLabel() {
-  templateList.value.forEach((value, index, array) => {
+  templateList.value.forEach((value: any) => {
     if (value.id === form.value.label_id) {
-      form.value.labels = value.labels;
+      form.value.labels = [];
+      value.labels.forEach((item: any) => {
+        form.value.labels.push({
+          name: item.name,
+          color: item.color,
+          attributes: item.attributes,
+          type: item.type,
+          template_id: item.template_id,
+          template_name: item.template_name,
+          template_label_id: item.template_label_id,
+        });
+      });
+      // form.value.labels = value.labels;
     }
   });
 }
@@ -190,18 +224,17 @@ onMounted(() => {
           >
         </a-select>
         <a-row v-for="(tag, index) in form.labels" :key="'t_' + index">
-          <a-col :span="8">
+          <a-col :span="6">
             <span>{{ tag.name }}</span>
           </a-col>
           <a-col :span="6">
-            <span>{{ tag.color }}</span>
+            <!-- <span>{{ tag.color }}</span> -->
             <a-tag :color="tag.color">{{ tag.color }}</a-tag>
           </a-col>
           <a-col>
             <a-select
               v-model:value="tag.type"
               placeholder="请选择"
-              @change="chooseLabel"
               :allowClear="true"
             >
               <a-select-option

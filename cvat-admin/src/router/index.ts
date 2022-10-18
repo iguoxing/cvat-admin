@@ -65,6 +65,20 @@ const router = createRouter({
     },
     {
       // task management
+      path: "/task",
+      component: frame,
+      name: "task",
+      redirect: "/task/index",
+      children: [
+        {
+          path: "index",
+          name: "taskIndex",
+          component: () => import("../components/task/List.vue"),
+        },
+      ],
+    },
+    {
+      // task management
       path: "/template",
       component: frame,
       name: "template",
