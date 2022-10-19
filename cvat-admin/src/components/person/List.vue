@@ -70,7 +70,8 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
-        <a-page-header title="人员管理" sub-title="Person Manage" />
+        <a-page-header title="人员管理" />
+        <!-- <a-page-header title="人员管理" sub-title="Person Manage" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="handleCreate"> 新建人员 </a-button>

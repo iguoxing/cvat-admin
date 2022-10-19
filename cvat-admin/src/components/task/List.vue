@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-10-16 10:17:40
+ * @LastEditTime: 2022-10-19 20:41:38
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -131,7 +131,8 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col>
-        <a-page-header title="桩号管理" sub-title="Station Manage" />
+        <a-page-header title="桩号管理" ß/>
+        <!-- <a-page-header title="桩号管理" sub-title="Station Manage" /> -->
       </a-col>
     </a-row>
     <!-- :row-selection="{

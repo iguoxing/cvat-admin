@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-18 17:23:05
+ * @LastEditTime: 2022-10-19 20:44:22
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -54,11 +54,11 @@ const columns = [
     dataIndex: "station_list",
     slots: { customRender: "station_list" },
   },
-  {
-    title: "标签",
-    dataIndex: "labels",
-    slots: { customRender: "labels" },
-  },
+  // {
+  //   title: "标签",
+  //   dataIndex: "labels",
+  //   slots: { customRender: "labels" },
+  // },
   {
     title: "状态",
     dataIndex: "status",
@@ -160,7 +160,8 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
-        <a-page-header title="路线管理" sub-title="Road Manage" />
+        <a-page-header title="路线管理" />
+        <!-- <a-page-header title="路线管理" sub-title="Road Manage" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="newRoad"> 新建路线 </a-button>
@@ -192,8 +193,8 @@ onMounted(() => {
         </a-row>
       </template>
       <template #operate="{ record }">
-        <a @click="edit(record)">编辑</a>
-        <a-divider type="vertical" />
+        <!-- <a @click="edit(record)">编辑</a>
+        <a-divider type="vertical" /> -->
         <a @click="stationList(record)">桩号列表</a>
         <a-divider type="vertical" />
         <a @click="deleteItem(record)">删除</a>

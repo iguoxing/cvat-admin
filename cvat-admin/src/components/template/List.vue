@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-10-18 17:06:16
+ * @LastEditTime: 2022-10-19 20:42:03
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -324,7 +324,8 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 300px">
-        <a-page-header title="标签模板" sub-title="Tag Template" />
+        <a-page-header title="标签模板" />
+        <!-- <a-page-header title="标签模板" sub-title="Tag Template" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="newStation"> 新建模板 </a-button>
