@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-18 17:28:36
+ * @LastEditTime: 2022-10-19 18:55:00
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -42,22 +42,22 @@ onMounted(() => {
   openKeys.value.push(subMenu.value);
 });
 
-watch(selectedKeys,(val,old) => {
-  console.log('val',val);
-  console.log('old',old);
-  if (val[0] == '100') {
+watch(selectedKeys, (val, old) => {
+  console.log("val", val);
+  console.log("old", old);
+  if (val[0] == "100") {
     router.push({ name: "home" });
   }
-  if (val[0] == '200') {
+  if (val[0] == "200") {
     router.push({ name: "road" });
   }
-  if (val[0] == '300') {
+  if (val[0] == "300") {
     router.push({ name: "task" });
   }
-  if (val[0] == '400') {
+  if (val[0] == "400") {
     router.push({ name: "person" });
   }
-  if (val[0] == '500') {
+  if (val[0] == "500") {
     router.push({ name: "template" });
   }
 });
@@ -98,7 +98,7 @@ function exitLogin() {
   });
 
   promise.then((result: any) => {
-    localStorage.removeItem("token")
+    localStorage.removeItem("token");
     router.push({ name: "login" });
   });
 }
@@ -106,11 +106,7 @@ function exitLogin() {
 <template>
   <a-layout id="components-layout-demo-custom-trigger" class="frame">
     <!-- v-model:collapsed="collapsed" -->
-    <a-layout-sider
-      :trigger="null"
-      collapsible
-      class="sideMenu"
-    >
+    <a-layout-sider :trigger="null" collapsible class="sideMenu">
       <div class="logo">CVAT Utrans</div>
       <a-menu
         theme="dark"
@@ -143,6 +139,20 @@ function exitLogin() {
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <div class="page-header">
+          <a
+            href="http://43.138.66.202:8080/projects?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="blue">返回项目列表</a-tag>
+          </a>
+          <a
+            href="http://43.138.66.202:8080/tasks?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
+          </a>
           <a-dropdown class="pre-step" :offset="1">
             <a class="ant-dropdown-link" @click.prevent>
               <a-avatar size="small">
