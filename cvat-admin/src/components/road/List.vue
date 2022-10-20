@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-19 20:44:22
+ * @LastEditTime: 2022-10-20 18:32:19
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -53,6 +53,11 @@ const columns = [
     title: "任务桩号",
     dataIndex: "station_list",
     slots: { customRender: "station_list" },
+  },
+  {
+    title: "抽检比例",
+    dataIndex: "qa_rate",
+    slots: { customRender: "qa_rate" },
   },
   // {
   //   title: "标签",
@@ -185,6 +190,7 @@ onMounted(() => {
         {{ record.station_list[0] ? record.station_list[0] : "-" }} /
         {{ record.station_list[1] ? record.station_list[1] : "-" }}
       </template>
+      <template #qa_rate="{ record }"> {{ record.qa_rate }}% </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
           {{ tag.name }} <a-tag :color="tag.color">{{ tag.color }}</a-tag> 【{{

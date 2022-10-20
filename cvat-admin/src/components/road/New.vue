@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-18 17:14:27
+ * @LastEditTime: 2022-10-20 18:30:07
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -36,6 +36,8 @@ let form = ref({
   files_path: "/hzf_test/",
   label_id: "",
   labels: [],
+  qa_rate: "50",
+  qa_segment: "3",
   org_width: "80",
   org_height: "80",
 });
@@ -65,6 +67,8 @@ function getProjectInfo() {
         endDate: result.start_date ? dayjs(result.end_date) : dayjs(),
         end_date: result.end_date,
         files_path: result.files_path ? result.files_path : "/hzf_test/",
+        qa_rate: result.qa_rate,
+        qa_segment: result.qa_segment,
         org_width: result.org_width,
         org_height: result.org_height,
       };
@@ -247,6 +251,20 @@ onMounted(() => {
           </a-col>
         </a-row>
         <div></div>
+      </a-form-item>
+      <a-form-item label="抽检比例">
+        <a-input
+          class="w-1/2"
+          v-model:value="form.qa_rate"
+          placeholder="请填写1-100范围内的整数"
+        />%
+      </a-form-item>
+      <a-form-item label="抽检段数">
+        <a-input
+          class="w-1/2"
+          v-model:value="form.qa_segment"
+          placeholder="请填写抽检段数"
+        />
       </a-form-item>
       <a-form-item label="图片宽度">
         <a-input
