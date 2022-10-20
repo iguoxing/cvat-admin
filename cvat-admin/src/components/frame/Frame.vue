@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-19 20:45:48
+ * @LastEditTime: 2022-10-20 10:28:16
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -153,6 +153,16 @@ function exitLogin() {
           >
             <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
           </a>
+          <!-- <a href="http://43.138.66.202:8080" target="_blank" class="mr-3">
+            <a-tag class="ant-hand" color="blue">跳转到标注端</a-tag>
+          </a> -->
+          <!-- <a
+            href="http://43.138.66.202:8080/tasks?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
+          </a> -->
           <a-dropdown class="pre-step" :offset="1">
             <a class="ant-dropdown-link" @click.prevent>
               <a-avatar size="small">

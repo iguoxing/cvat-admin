@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-10-19 20:42:03
+ * @LastEditTime: 2022-10-20 10:51:21
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -129,6 +129,7 @@ function initTask() {
     color: "#333",
     type: "rectangle",
     attributes: [],
+    deleted: undefined,
   });
 }
 function newStation() {
@@ -163,20 +164,8 @@ interface Domain {
   color: string;
   type: string;
   attributes: [];
+  deleted: boolean | undefined;
 }
-// let dynamicValidateForm = ref({
-//   name: "",
-//   content: "",
-//   labels: [
-//     {
-//       id: undefined,
-//       name: "",
-//       color: "#333",
-//       type: "rectangle",
-//       attributes: [],
-//     },
-//   ],
-// });
 
 let preForm = ref({
   name: "",
@@ -193,18 +182,11 @@ let dynamicValidateForm = reactive<{
       color: "#333",
       type: "rectangle",
       attributes: [],
+      deleted: undefined,
     },
   ],
 });
 
-let editForm = ref({
-  name: "",
-  start_station: "",
-  end_station: "",
-  wk_assignee_id: null,
-  qa_assignee_id: null,
-  labels: [],
-});
 const addDomain = () => {
   dynamicValidateForm.labels.push({
     id: undefined,
@@ -212,6 +194,7 @@ const addDomain = () => {
     color: "#333",
     type: "rectangle",
     attributes: [],
+    deleted: undefined,
   });
   console.log(preForm);
   console.log(dynamicValidateForm);
@@ -219,10 +202,11 @@ const addDomain = () => {
 };
 let options = [...Array(25)].map((_, i) => ({ value: i + 1 }));
 const removeDomain = (item: Domain) => {
-  let index = dynamicValidateForm.labels.indexOf(item);
-  if (index !== -1) {
-    dynamicValidateForm.labels.splice(index, 1);
-  }
+  item.deleted = true //设置为删除
+  // let index = dynamicValidateForm.labels.indexOf(item);
+  // if (index !== -1) {
+  //   dynamicValidateForm.labels.splice(index, 1);
+  // }
 };
 function addTag(labels){
   visible.value = false;
@@ -298,6 +282,7 @@ function editClick(item) {
       color: item.color,
       attributes: item.attributes,
       type: item.type,
+      deleted: undefined,
     });
   });
 }
@@ -405,6 +390,7 @@ onMounted(() => {
           v-bind="formItemLayout"
           :label="'标签名称'"
           :name="['labels', index, 'value']"
+          v-show="!domain.deleted"
         >
           <!-- <span>: </span> -->
           <a-input
