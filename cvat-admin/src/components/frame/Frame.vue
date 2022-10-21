@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-20 10:28:16
+ * @LastEditTime: 2022-10-21 18:23:12
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -107,9 +107,9 @@ function exitLogin() {
   <a-layout id="components-layout-demo-custom-trigger" class="frame">
     <!-- v-model:collapsed="collapsed" -->
     <a-layout-sider :trigger="null" collapsible class="sideMenu">
-      <div class="logo">CVAT Utrans</div>
+      <div class="logo">iSTL 管理端</div>
+      <!-- theme="dark" -->
       <a-menu
-        theme="dark"
         mode="inline"
         v-model:selectedKeys="selectedKeys"
         v-model:openKeys="openKeys"
@@ -241,6 +241,7 @@ function exitLogin() {
   background-repeat: no-repeat;
   text-align: center;
   font-size: 24px;
+  color: #6f4f4f;
 }
 .layout-content {
   display: inline-block;
@@ -267,5 +268,12 @@ function exitLogin() {
 }
 .sideMenu .anticon svg {
   display: block;
+}
+
+.ant-layout  .ant-layout-sider {
+  background: #fff;
+  /* background: #282c34; */
+  color: #fff;
+  /* line-height: 120px; */
 }
 </style>

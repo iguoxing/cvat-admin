@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-21 10:46:45
+ * @LastEditTime: 2022-10-21 18:07:34
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -10,7 +10,7 @@
     <a-layout>
       <a-layout-content>
         <div class="login-div">
-          <a-card title="CVAT Utrans Platform V1.0" bodyStyle="{padding:24px}">
+          <a-card title="iSTL 标注平台管理端" bodyStyle="{padding:24px}">
             <!-- {{ msg }}--<button @click="count++">{{ count }}</button> -->
             <a-input v-model:value="account" placeholder="请输入手机号或邮箱" />
             <a-input-password
@@ -112,12 +112,14 @@ input[type="text"],
   line-height: 1.5;
 }
 #components-layout-demo-basic .ant-layout-sider {
-  background: #282c34;
+  background: #fff;
+  /* background: #282c34; */
   color: #fff;
   line-height: 120px;
 }
 #components-layout-demo-basic .ant-layout {
-  background: #282c34;
+  background: #0087ed;
+  /* background: #282c34; */
   background: linear-gradient(to bottom,#063b6d,#282c34);
   background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
   background-repeat: no-repeat;
