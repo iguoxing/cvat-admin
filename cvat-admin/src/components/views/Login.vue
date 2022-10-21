@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-13 16:26:33
+ * @LastEditTime: 2022-10-21 10:46:45
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -50,6 +50,7 @@ const router = useRouter();
 console.log(import.meta.env)
 
 function goTo() {
+  localStorage.removeItem("token");
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "post",
