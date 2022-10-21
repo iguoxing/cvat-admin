@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-21 11:03:08
+ * @LastEditTime: 2022-10-21 11:39:12
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -153,7 +153,7 @@ function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/stat_2",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/stat_2/",
       // params: {
       //   project_id: 63,
       // },
