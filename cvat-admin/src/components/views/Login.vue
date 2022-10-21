@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-21 18:07:34
+ * @LastEditTime: 2022-10-21 18:24:51
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -120,7 +120,7 @@ input[type="text"],
 #components-layout-demo-basic .ant-layout {
   background: #0087ed;
   /* background: #282c34; */
-  background: linear-gradient(to bottom,#063b6d,#282c34);
+  /* background: linear-gradient(to bottom,#063b6d,#282c34); */
   background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
   background-repeat: no-repeat;
   background-size: contain;
