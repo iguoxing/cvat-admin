@@ -23,7 +23,10 @@ const activeOptions = [
 ];
 const router = useRouter();
 const route = useRoute();
+console.log('query', route.query);
 // console.log("route params: ", route.params);
+const query = route.query;
+const isNew = route.query.id == undefined;
 const res = ref([]);
 function newRoad() {
   console.log("newRoad");
@@ -53,20 +56,21 @@ function getList() {
 }
 
 const formState = reactive<FormState>({
-  username: "",
+  username: isNew ? "" : query.username,
   password: "",
   // confirmPassword: "",
   // first_name: "",
   // last_name: "",
   email: "",
   // groups: [],
-  role: "admin",
+  role: isNew ? "admin" : query.groups[0],
   is_staff: true,
   is_superuser: true,
   is_active: true,
 });
 const onFinish = (values: any) => {
   console.log("Success:", values);
+  save();
 };
 
 const onFinishFailed = (errorInfo: any) => {
@@ -79,38 +83,49 @@ function cancel() {
 
 function save() {
   console.log(formState);
-  let data = {
-    username: formState.username,
-    password: formState.password,
-    first_name: '',
-    last_name: '',
-    email: formState.email,
-    groups: [formState.role],
-    is_staff: true,
-    is_superuser: true,
-    is_active: true,
-  };
+  let url = import.meta.env.VITE_APP_BASE_URL + "api/users";;
+  let data;
+  let method = "POST";
+  if (isNew) {
+    data = {
+      username: formState.username,
+      password: formState.password,
+      first_name: '',
+      last_name: '',
+      email: formState.email,
+      groups: [formState.role],
+      is_staff: true,
+      is_superuser: true,
+      is_active: true,
+    };
+  } else {
+    url = import.meta.env.VITE_APP_BASE_URL + "api/users/" + query.id;
+    method = 'patch';
+    data = {
+      username: formState.username,
+      password: formState.password,
+      groups: [formState.role],
+    };
+  }
   console.log(data);
-    axios({
-      method: "post",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/users",
-      data,
-    }).then(function (data) {
-      console.log('保存成功');
-      router.push({ name: "road" });
-    });
+  axios({
+    method,
+    url,
+    data,
+  }).then(function (data) {
+    console.log('保存成功');
+    router.push({ name: "person" });
+  });
 }
 
 onMounted(() => {
-  console.log('params', route.params);
-  console.log('query', route.query);
-  console.log('hash', route.hash);
+  
 });
 </script>
 
 <template>
   <div>
-    <a-page-header title="人员新增" @back="cancel" />
+    <a-page-header :title="`人员${isNew ? '新增' : '编辑'}`" @back="cancel" />
     <a-form
       :model="formState"
       name="basic"
@@ -123,7 +138,7 @@ onMounted(() => {
       <a-form-item
         label="用户名"
         name="username"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
+        :rules="[{ required: true, message: '请输入用户名!' }]"
       >
         <a-input v-model:value="formState.username" />
       </a-form-item>
@@ -131,9 +146,9 @@ onMounted(() => {
       <a-form-item
         label="密码"
         name="password"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
+        :rules="[{ required: true, message: '请输入密码!' }]"
       >
-        <a-input-password v-model:value="formState.password" />
+        <a-input v-model:value="formState.password" />
       </a-form-item>
 
       <!-- <a-form-item
@@ -155,15 +170,17 @@ onMounted(() => {
       >
         <a-input v-model:value="formState.last_name" />
       </a-form-item> -->
-      <a-form-item
-        label="电子邮箱"
-        name="email"
-      >
-        <a-input v-model:value="formState.email" />
-      </a-form-item>
+      <template v-show="isNew">
+        <a-form-item
+          label="电子邮箱"
+          name="email"
+        >
+          <a-input v-model:value="formState.email" />
+        </a-form-item>
+      </template>
       <a-form-item
         label="用户组"
-        name="groups"
+        name="role"
       >
         <a-radio-group v-model:value="formState.role" :options="roleOptions" />
       </a-form-item>
@@ -185,15 +202,15 @@ onMounted(() => {
       >
         <a-radio-group v-model:value="formState.is_active" :options="activeOptions" />
       </a-form-item> -->
-    </a-form>
       <a-row type="flex" justify="center" align="start" class="mt-3">
-      <a-col>
-        <a-button data-test="saveFun" type="primary" @click="save">
-          保存
-        </a-button>
-        <a-button class="ml-3" @click="cancel"> 取消 </a-button>
-      </a-col>
-    </a-row>
+        <a-col>
+          <a-button type="primary" html-type="submit">
+            保存
+          </a-button>
+          <a-button class="ml-3" @click="cancel"> 取消 </a-button>
+        </a-col>
+      </a-row>
+    </a-form>
   </div>
 </template>
 

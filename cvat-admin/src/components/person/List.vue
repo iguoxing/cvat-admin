@@ -70,8 +70,10 @@ function edit(item: { id: string; }) {
   console.log('--', item);
   router.push({
     name: "personEdit",
-    params: {
-      name: 'Jack'
+    query: {
+     id: item.id,
+     username: item.username,
+     groups: item.groups
     },
   });
 }
