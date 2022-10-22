@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-20 18:30:07
+ * @LastEditTime: 2022-10-21 18:21:38
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -34,7 +34,7 @@ let form = ref({
   endDate: ref<Dayjs>(),
   end_date: "",
   files_path: "/hzf_test/",
-  label_id: "",
+  label_id: [],
   labels: [],
   qa_rate: "50",
   qa_segment: "3",
@@ -71,6 +71,7 @@ function getProjectInfo() {
         qa_segment: result.qa_segment,
         org_width: result.org_width,
         org_height: result.org_height,
+        labels: result.labels,
       };
     }
   });
@@ -145,9 +146,9 @@ function getTemplateList() {
 }
 
 function chooseLabel() {
+  form.value.labels = [];
   templateList.value.forEach((value: any) => {
-    if (value.id === form.value.label_id) {
-      form.value.labels = [];
+    if (form.value.label_id.includes(value.id) ) {
       value.labels.forEach((item: any) => {
         form.value.labels.push({
           name: item.name,
@@ -162,6 +163,7 @@ function chooseLabel() {
       // form.value.labels = value.labels;
     }
   });
+  console.log(form.value.labels)
 }
 
 function cancel() {
@@ -215,10 +217,12 @@ onMounted(() => {
       </a-form-item>
       <a-form-item label="标签模板">
         <a-select
+          mode="multiple"
           v-model:value="form.label_id"
           placeholder="请选择"
           @change="chooseLabel"
           :allowClear="true"
+          v-show="!pid"
         >
           <a-select-option
             :value="item.id"

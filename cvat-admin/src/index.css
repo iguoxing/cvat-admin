@@ -14,6 +14,7 @@
 button.ant-btn-primary{
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   background-color: #1890ff;
 }
 /* button, [type='button'], [type='reset'], [type='submit'] {

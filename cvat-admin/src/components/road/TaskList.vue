@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-10-17 18:14:03
+ * @LastEditTime: 2022-10-21 17:54:16
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -16,11 +16,8 @@ import type { FormInstance } from "ant-design-vue";
 const route = useRoute();
 
 const pid = route.params && route.params.id;
-const projectTitle =
-  "桩号列表" +
-  (JSON.parse(localStorage.projectInfo).name
-    ? "-" + JSON.parse(localStorage.projectInfo).name
-    : "");
+const pname = JSON.parse(localStorage.projectInfo).name
+const projectTitle = "桩号列表" + (pname ? "-" + pname : "");
 const columns = [
   {
     title: "任务ID",
@@ -254,7 +251,7 @@ const removeDomain = (item: Domain) => {
 const handleOk = () => {
   visible.value = false;
   dynamicValidateForm.domains.forEach((item) => {
-    item.name = item.start_station + "~" + item.end_station;
+    item.name = pname + "_" +item.start_station + "~" + item.end_station;
   });
   formRef.value
     .validate()

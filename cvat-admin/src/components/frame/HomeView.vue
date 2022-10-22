@@ -1,11 +1,14 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-13 15:52:22
+ * @LastEditTime: 2022-10-21 11:39:12
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
 <script setup lang="ts">
+import { onMounted, ref, watch } from "vue";
+import axios from "../../stores/interface";
+
 const headStyle = {
   "font-weight": 600,
   color: "#333",
@@ -143,6 +146,33 @@ const tagColumns = [
 const homeData = {
   process: [{ id: 1 }],
 };
+
+const res = ref([]);
+
+function getList() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/stat_2/",
+      // params: {
+      //   project_id: 63,
+      // },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      res.value = result.results;
+      console.log(res.value);
+    }
+  });
+}
+
+onMounted(() => {
+  getList();
+});
 </script>
 
 <template>
