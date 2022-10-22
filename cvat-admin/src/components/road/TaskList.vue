@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-10-16 17:00:10
+ * @LastEditTime: 2022-10-17 18:14:03
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -166,6 +166,7 @@ function cancel() {
 function initTask() {
   dynamicValidateForm.domains = []
   dynamicValidateForm.domains.push({
+    id: undefined,
     name: "",
     start_station: "",
     end_station: "",
@@ -281,7 +282,7 @@ const handleOk = () => {
     }
   });
 };
-function editClick(item){
+function editClick(item: { id: any; name: any; start_station: any; end_station: any; wk_assignee: { id: any; }; qa_assignee: { id: any; }; }){
   editvisible.value = true;
   dynamicValidateForm.domains = []
   dynamicValidateForm.domains.push({
@@ -392,7 +393,7 @@ onMounted(() => {
       >
         <a-form-item
           v-for="(domain, index) in dynamicValidateForm.domains"
-          :key="domain.key"
+          :key="'d' + index"
           v-bind="formItemLayout"
           :label="'开始桩号'"
           :name="['domains', index, 'value']"
@@ -470,7 +471,7 @@ onMounted(() => {
       >
         <a-form-item
           v-for="(domain, index) in dynamicValidateForm.domains"
-          :key="domain.key"
+          :key="'do' + index"
           v-bind="formItemLayout"
           :label="'开始桩号'"
           :name="['domains', index, 'value']"

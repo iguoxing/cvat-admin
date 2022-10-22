@@ -78,6 +78,20 @@ const router = createRouter({
       ],
     },
     {
+      // task management
+      path: "/template",
+      component: frame,
+      name: "template",
+      redirect: "/template/index",
+      children: [
+        {
+          path: "index",
+          name: "templateIndex",
+          component: () => import("../components/template/List.vue"),
+        },
+      ],
+    },
+    {
       // person management
       path: "/person",
       component: frame,

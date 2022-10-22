@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-15 11:26:51
+ * @LastEditTime: 2022-10-20 18:32:19
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -10,6 +10,15 @@
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
+
+const labelType = {
+  bbox: "矩形",
+  rectangle: "矩形",
+  ellipse: "椭圆",
+  polyline: "多边形",
+  tag: "标签",
+};
+
 const columns = [
   {
     title: "项目ID",
@@ -34,11 +43,11 @@ const columns = [
   },
   {
     title: "已标注图片数",
-    dataIndex: "frame_worked"
+    dataIndex: "frame_worked",
   },
   {
     title: "图片总数",
-    dataIndex: "frame_num"
+    dataIndex: "frame_num",
   },
   {
     title: "任务桩号",
@@ -46,8 +55,18 @@ const columns = [
     slots: { customRender: "station_list" },
   },
   {
+    title: "抽检比例",
+    dataIndex: "qa_rate",
+    slots: { customRender: "qa_rate" },
+  },
+  // {
+  //   title: "标签",
+  //   dataIndex: "labels",
+  //   slots: { customRender: "labels" },
+  // },
+  {
     title: "状态",
-    dataIndex: "status"
+    dataIndex: "status",
   },
   {
     title: "操作",
@@ -60,8 +79,9 @@ const res = ref([]);
 const router = useRouter();
 const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 
-function setProjectPage(item: { id: any; }) {
-  localStorage.projectInfo = item && item.id ? JSON.stringify(item) : JSON.stringify({ name: item })
+function setProjectPage(item: { id: any }) {
+  localStorage.projectInfo =
+    item && item.id ? JSON.stringify(item) : JSON.stringify({ name: item });
 }
 
 function newRoad() {
@@ -72,29 +92,29 @@ function onSelectChange(selectedRowKeys: any) {
   selectedRowKeys = selectedRowKeys;
 }
 
-function edit(item: { id: string; }) {
+function edit(item: { id: string }) {
   // console.log("item: ", item, );
-  router.push('edit/' + item.id);
+  router.push("edit/" + item.id);
 }
 
-function stationList(item: { id: string; }) {
+function stationList(item: { id: string }) {
   setProjectPage(item);
-  router.push('stationlist/' + item.id);
+  router.push("stationlist/" + item.id);
 }
 
-function newStation(item: { id: string; }) {
+function newStation(item: { id: string }) {
   // console.log("item: ", item, );
   setProjectPage(item);
-  router.push('station/' + item.id);
+  router.push("station/" + item.id);
 }
 
-function handleTableChange(page: { current: number; }) {
-  console.log("pagination: ", page );
+function handleTableChange(page: { current: number }) {
+  console.log("pagination: ", page);
   if (page && page.current) {
     pagination.value.current = page.current;
   }
   // debugger
-  getList()
+  getList();
 }
 function getList() {
   const promise = new Promise((resolve, reject) => {
@@ -115,22 +135,38 @@ function getList() {
   promise.then((result: any) => {
     if (result) {
       res.value = result.results;
-      pagination.value.total = result.count
+      pagination.value.total = result.count;
       console.log(res.value);
     }
   });
-};
-onMounted(() => {
-  getList()
-});
+}
 
+function deleteItem(item) {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "delete",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + item.id,
+    }).then(function (data) {
+      resolve(data);
+    });
+  });
+
+  promise.then((result: any) => {
+    getList();
+  });
+}
+
+onMounted(() => {
+  getList();
+});
 </script>
 
 <template>
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
-        <a-page-header title="路线管理" sub-title="Road Manage" />
+        <a-page-header title="路线管理" />
+        <!-- <a-page-header title="路线管理" sub-title="Road Manage" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="newRoad"> 新建路线 </a-button>
@@ -148,17 +184,29 @@ onMounted(() => {
       @change="handleTableChange"
     >
       <template #complete_task_num="{ record }">
-        {{record.complete_task_num}} / {{record.all_task_num}}
+        {{ record.complete_task_num }} / {{ record.all_task_num }}
       </template>
       <template #station_list="{ record }">
-        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
+        {{ record.station_list[0] ? record.station_list[0] : "-" }} /
+        {{ record.station_list[1] ? record.station_list[1] : "-" }}
+      </template>
+      <template #qa_rate="{ record }"> {{ record.qa_rate }}% </template>
+      <template #labels="{ record }">
+        <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
+          {{ tag.name }} <a-tag :color="tag.color">{{ tag.color }}</a-tag> 【{{
+            labelType[tag.type]
+          }}】
+        </a-row>
       </template>
       <template #operate="{ record }">
-        <a @click="edit(record)">编辑</a>
-        <a-divider type="vertical" />
+        <!-- <a @click="edit(record)">编辑</a>
+        <a-divider type="vertical" /> -->
         <a @click="stationList(record)">桩号列表</a>
         <a-divider type="vertical" />
-        <a @click="newStation(record)">新建桩号</a>      </template>
+        <a @click="deleteItem(record)">删除</a>
+        <!-- <a-divider type="vertical" />
+        <a @click="newStation(record)">新建桩号</a> -->
+      </template>
     </a-table>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-13 14:27:41
+ * @LastEditTime: 2022-10-20 18:30:07
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -9,16 +9,24 @@
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import type { Dayjs } from "dayjs";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 // console.log("router: ", router);
-console.log("route: ", route);
-console.log("route params: ", route.params);
+// console.log("route: ", route);
+// console.log("route params: ", route.params);
 const pid = route.params && route.params.id;
 
-const selectedRowKeys = ref([]);let form = ref({
+let templateList = ref([]);
+let labelType = ref([
+  { id: "rectangle", name: "矩形" },
+  // { id: "bbox", name: "矩形" },
+  { id: "ellipse", name: "椭圆" },
+  { id: "polyline", name: "多边形" },
+  { id: "tag", name: "标签" },
+]);
+let form = ref({
   name: "test",
   describe: "测试",
   start_date: "",
@@ -26,6 +34,10 @@ const selectedRowKeys = ref([]);let form = ref({
   endDate: ref<Dayjs>(),
   end_date: "",
   files_path: "/hzf_test/",
+  label_id: "",
+  labels: [],
+  qa_rate: "50",
+  qa_segment: "3",
   org_width: "80",
   org_height: "80",
 });
@@ -47,40 +59,31 @@ function getProjectInfo() {
   promise.then((result: any) => {
     if (result) {
       form.value = result;
-      form.value.startDate = dayjs(result.start_date || "");
-      form.value.endDate = dayjs(result.end_date || "");
       form.value = {
         name: result.name,
         describe: result.describe,
         start_date: result.start_date,
-        startDate: dayjs(result.start_date || ""),
-        endDate: dayjs(result.end_date || ""),
+        startDate: result.start_date ? dayjs(result.start_date) : dayjs(),
+        endDate: result.start_date ? dayjs(result.end_date) : dayjs(),
         end_date: result.end_date,
-        files_path: result.files_path,
+        files_path: result.files_path ? result.files_path : "/hzf_test/",
+        qa_rate: result.qa_rate,
+        qa_segment: result.qa_segment,
         org_width: result.org_width,
         org_height: result.org_height,
-      }
-      
+      };
     }
   });
 }
 
 pid && getProjectInfo();
 
-function save() {
-  console.log(form)
-  console.log(form.value)
-  if (form.value && form.value.startDate) {
-    form.value.start_date = dayjs(form.value.startDate).format('YYYY-MM-DD')
-  }
-  if (form.value && form.value.endDate) {
-    form.value.end_date = dayjs(form.value.endDate).format('YYYY-MM-DD')
-  }
+function addRoad(road){
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: import.meta.env.VITE_APP_BASE_URL + "api/projects",
-      data: form.value,
+      data: road,
     }).then(function (data) {
       resolve(data);
     });
@@ -88,17 +91,84 @@ function save() {
 
   promise.then((result) => {
     router.push({ name: "road" });
-    // if (result) {
-    //   router.push({ name: "road" });
-    //   console.log(result);
-    // }
   });
 }
+
+function editRoad(road){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "PATCH",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
+      data: road,
+    }).then(function (data) {
+      resolve(data);
+    });
+  });
+
+  promise.then((result) => {
+    router.push({ name: "road" });
+  });
+}
+
+function save() {
+  console.log(form);
+  console.log(form.value);
+  if (form.value && form.value.startDate) {
+    form.value.start_date = dayjs(form.value.startDate).format("YYYY-MM-DD");
+  }
+  if (form.value && form.value.endDate) {
+    form.value.end_date = dayjs(form.value.endDate).format("YYYY-MM-DD");
+  }
+  if (pid) {
+    editRoad(form.value);
+  } else {
+    addRoad(form.value);
+  }
+  
+}
+
+function getTemplateList() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/templates",
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      templateList.value = result.results;
+    }
+  });
+}
+
+function chooseLabel() {
+  templateList.value.forEach((value: any) => {
+    if (value.id === form.value.label_id) {
+      form.value.labels = [];
+      value.labels.forEach((item: any) => {
+        form.value.labels.push({
+          name: item.name,
+          color: item.color,
+          attributes: item.attributes,
+          type: item.type,
+          template_id: item.template_id,
+          template_name: item.template_name,
+          template_label_id: item.template_label_id,
+        });
+      });
+      // form.value.labels = value.labels;
+    }
+  });
+}
+
 function cancel() {
   router.go(-1);
 }
 onMounted(() => {
-  // getList();
+  getTemplateList();
 });
 </script>
 
@@ -113,7 +183,11 @@ onMounted(() => {
       :rules="rules"
     >
       <a-form-item ref="name" label="名称" name="name">
-        <a-input v-model:value="form.name" placeholder="请填写名称" class="w-1/2"/>
+        <a-input
+          v-model:value="form.name"
+          placeholder="请填写名称"
+          class="w-1/2"
+        />
       </a-form-item>
       <a-form-item ref="company" label="描述" name="company">
         <a-textarea
@@ -122,7 +196,11 @@ onMounted(() => {
         />
       </a-form-item>
       <a-form-item ref="date" label="项目时间" name="date">
-        <a-date-picker v-model:value="form.startDate" format="YYYY-MM-DD" placeholder="开始日期" />
+        <a-date-picker
+          v-model:value="form.startDate"
+          format="YYYY-MM-DD"
+          placeholder="开始日期"
+        />
         <a-date-picker
           v-model:value="form.endDate"
           placeholder="结束日期"
@@ -130,13 +208,77 @@ onMounted(() => {
         />
       </a-form-item>
       <a-form-item label="图片文件夹">
-        <a-input v-model:value="form.files_path" placeholder="请填写图片文件夹"/>
+        <a-input
+          v-model:value="form.files_path"
+          placeholder="请填写图片文件夹"
+        />
+      </a-form-item>
+      <a-form-item label="标签模板">
+        <a-select
+          v-model:value="form.label_id"
+          placeholder="请选择"
+          @change="chooseLabel"
+          :allowClear="true"
+        >
+          <a-select-option
+            :value="item.id"
+            v-for="(item, i) in templateList"
+            :key="'la_' + i"
+            >{{ item.name }}</a-select-option
+          >
+        </a-select>
+        <a-row v-for="(tag, index) in form.labels" :key="'t_' + index">
+          <a-col :span="6">
+            <span>{{ tag.name }}</span>
+          </a-col>
+          <a-col :span="6">
+            <!-- <span>{{ tag.color }}</span> -->
+            <a-tag :color="tag.color">{{ tag.color }}</a-tag>
+          </a-col>
+          <a-col>
+            <a-select
+              v-model:value="tag.type"
+              placeholder="请选择"
+              :allowClear="true"
+            >
+              <a-select-option
+                :value="label.id"
+                v-for="(label, i) in labelType"
+                :key="'lab_' + i"
+                >{{ label.name }}</a-select-option
+              >
+            </a-select>
+          </a-col>
+        </a-row>
+        <div></div>
+      </a-form-item>
+      <a-form-item label="抽检比例">
+        <a-input
+          class="w-1/2"
+          v-model:value="form.qa_rate"
+          placeholder="请填写1-100范围内的整数"
+        />%
+      </a-form-item>
+      <a-form-item label="抽检段数">
+        <a-input
+          class="w-1/2"
+          v-model:value="form.qa_segment"
+          placeholder="请填写抽检段数"
+        />
       </a-form-item>
       <a-form-item label="图片宽度">
-        <a-input class="w-1/2" v-model:value="form.org_width" placeholder="请填写图片实际宽度" />
+        <a-input
+          class="w-1/2"
+          v-model:value="form.org_width"
+          placeholder="请填写图片实际宽度"
+        />
       </a-form-item>
       <a-form-item label="图片高度">
-        <a-input class="w-1/2" v-model:value="form.org_height" placeholder="请填写图片实际高度" />
+        <a-input
+          class="w-1/2"
+          v-model:value="form.org_height"
+          placeholder="请填写图片实际高度"
+        />
       </a-form-item>
     </a-form>
     <a-row type="flex" justify="center" align="start" class="mt-3">

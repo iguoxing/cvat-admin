@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-13 16:30:32
+ * @LastEditTime: 2022-10-20 10:28:16
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -13,6 +13,7 @@ import {
   HomeOutlined,
   ProjectOutlined,
   UnorderedListOutlined,
+  TagsOutlined,
   TeamOutlined,
   UserOutlined,
   DownOutlined,
@@ -41,20 +42,23 @@ onMounted(() => {
   openKeys.value.push(subMenu.value);
 });
 
-watch(selectedKeys,(val,old) => {
-  console.log('val',val);
-  console.log('old',old);
-  if (val[0] == '100') {
+watch(selectedKeys, (val, old) => {
+  console.log("val", val);
+  console.log("old", old);
+  if (val[0] == "100") {
     router.push({ name: "home" });
   }
-  if (val[0] == '200') {
+  if (val[0] == "200") {
     router.push({ name: "road" });
   }
-  if (val[0] == '300') {
+  if (val[0] == "300") {
     router.push({ name: "task" });
   }
-  if (val[0] == '400') {
+  if (val[0] == "400") {
     router.push({ name: "person" });
+  }
+  if (val[0] == "500") {
+    router.push({ name: "template" });
   }
 });
 
@@ -75,41 +79,34 @@ function setMenu(val: string) {
     case "/person/index":
       k = "400";
       break;
+    case "/template/index":
+      k = "500";
+      break;
   }
   subMenu.value = m;
   return k;
 }
 
 function exitLogin() {
-  // const promise = new Promise((resolve, reject) => {
-  //   axios({
-  //     method: "post",
-  //     url: import.meta.env.VITE_APP_BASE_URL + "api/auth/logout",
-  //     data: {
-  //       username: account.value,
-  //       password: password.value,
-  //     },
-  //   }).then(function (data) {
-  //     resolve(data && data.data);
-  //   });
-  // });
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/auth/logout",
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
 
-  // promise.then((result: any) => {
-  //   if (result && result.key) {
-  //     localStorage.token = result.key;
-  //     router.push({ name: "home" });
-  //   }
-  // });
+  promise.then((result: any) => {
+    localStorage.removeItem("token");
+    router.push({ name: "login" });
+  });
 }
 </script>
 <template>
   <a-layout id="components-layout-demo-custom-trigger" class="frame">
     <!-- v-model:collapsed="collapsed" -->
-    <a-layout-sider
-      :trigger="null"
-      collapsible
-      class="sideMenu"
-    >
+    <a-layout-sider :trigger="null" collapsible class="sideMenu">
       <div class="logo">CVAT Utrans</div>
       <a-menu
         theme="dark"
@@ -129,15 +126,43 @@ function exitLogin() {
           <UnorderedListOutlined />
           <span :menu="300">桩号管理</span>
         </a-menu-item>
-        <a-menu-item key="400">
+        <a-menu-item key="500">
+          <TagsOutlined />
+          <span :menu="500">标签模板</span>
+        </a-menu-item>
+        <!-- <a-menu-item key="400">
           <TeamOutlined />
           <span :menu="400">人员管理</span>
-        </a-menu-item>
+        </a-menu-item> -->
       </a-menu>
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <div class="page-header">
+          <a
+            href="http://43.138.66.202:8080/projects?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="blue">返回项目列表</a-tag>
+          </a>
+          <a
+            href="http://43.138.66.202:8080/tasks?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
+          </a>
+          <!-- <a href="http://43.138.66.202:8080" target="_blank" class="mr-3">
+            <a-tag class="ant-hand" color="blue">跳转到标注端</a-tag>
+          </a> -->
+          <!-- <a
+            href="http://43.138.66.202:8080/tasks?page=1"
+            target="_blank"
+            class="mr-3"
+          >
+            <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
+          </a> -->
           <a-dropdown class="pre-step" :offset="1">
             <a class="ant-dropdown-link" @click.prevent>
               <a-avatar size="small">
