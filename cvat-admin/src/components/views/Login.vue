@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-21 18:24:51
+ * @LastEditTime: 2022-10-24 10:45:41
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -121,9 +121,11 @@ input[type="text"],
   background: #0087ed;
   /* background: #282c34; */
   /* background: linear-gradient(to bottom,#063b6d,#282c34); */
-  background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg);
+  background-image: url(http://iguoxing.oss-cn-beijing.aliyuncs.com/cvat/img/bg-2.jpg);
+  /* background-image: url(https://speechocean-bj.oss-cn-beijing.aliyuncs.com/vds_publish/images/back.svg); */
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  /* background-size: contain; */
 }
 #components-layout-demo-basic .ant-layout-content {
   display: flex;
@@ -141,5 +143,8 @@ input[type="text"],
 }
 #components-layout-demo-basic > .ant-layout:last-child {
   margin: 0;
+}
+.ant-card-bordered {
+  opacity: 0.96;
 }
 </style>
