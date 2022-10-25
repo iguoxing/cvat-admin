@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
+import PieChart from "../charts/PieChart.vue";
 
 const headStyle = {
   "font-weight": 600,
@@ -304,6 +305,7 @@ onMounted(() => {
         </template>
       </a-table>
     </a-card>
+    <PieChart />
   </div>
 </template>
 
