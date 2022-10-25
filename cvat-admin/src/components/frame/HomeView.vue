@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-21 11:39:12
+ * @LastEditTime: 2022-10-25 19:42:40
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -19,34 +19,38 @@ const cardStyle = {
 };
 const columns = [
   {
-    title: "路线名称",
-    dataIndex: "name",
+    title: "路线",
+    dataIndex: "project_name",
   },
   {
     title: "起点桩号",
-    dataIndex: "total_count",
+    dataIndex: "start_station",
   },
   {
     title: "终点桩号",
-    dataIndex: "average_daily_output",
+    dataIndex: "end_station",
   },
   {
-    title: "里程（终点-起点）",
-    dataIndex: "project_process",
-    slots: { customRender: "project_process" },
+    title: "里程数",
+    dataIndex: "mileage",
   },
   {
-    title: "总张数",
-    dataIndex: "average_daily_output",
+    title: "标注员",
+    dataIndex: "wk_assignee",
+    slots: { customRender: "wk_assignee" },
   },
   {
-    title: "标注进度（标注完成的图片/总图片）",
-    dataIndex: "construction_period",
-    slots: { customRender: "construction_period" },
+    title: "质检员",
+    dataIndex: "qa_assignee",
+    slots: { customRender: "qa_assignee" },
   },
   {
-    title: "是否验收（已验收/未验收）",
-    dataIndex: "end_date",
+    title: "里程",
+    dataIndex: "mileage",
+  },
+  {
+    title: "任务状态",
+    dataIndex: "task_status",
   },
   {
     title: "截止日期",
@@ -94,7 +98,7 @@ const stationColumns = [
 const tagColumns = [
   {
     title: "路线",
-    dataIndex: "name",
+    dataIndex: "project_name",
   },
   {
     title: "桩号",
@@ -102,21 +106,19 @@ const tagColumns = [
   },
   {
     title: "起点桩号",
-    dataIndex: "average_daily_output",
+    dataIndex: "start_station",
   },
   {
     title: "终点桩号",
-    dataIndex: "project_process",
-    slots: { customRender: "project_process" },
+    dataIndex: "end_station",
   },
   {
     title: "里程数",
-    dataIndex: "average_daily_output",
+    dataIndex: "mileage",
   },
   {
     title: "标注员",
-    dataIndex: "construction_period",
-    slots: { customRender: "construction_period" },
+    dataIndex: "wk_assignee.username",
   },
   {
     title: "审核员",
@@ -164,7 +166,7 @@ function getList() {
 
   promise.then((result: any) => {
     if (result) {
-      res.value = result.results;
+      res.value = result;
       console.log(res.value);
     }
   });
@@ -183,10 +185,10 @@ onMounted(() => {
         <a-card title="路线" :headStyle="headStyle" size="small">
           <a-row>
             <a-col :span="12">
-              <a-statistic title="全部路线" :value="123" />
+              <a-statistic title="全部路线" :value="res.projects_total || 0" />
             </a-col>
             <a-col :span="12">
-              <a-statistic title="已完成路线" :value="123" />
+              <a-statistic title="已完成路线" :value="res.projects_complete || 0" />
             </a-col>
           </a-row>
         </a-card>
@@ -196,10 +198,10 @@ onMounted(() => {
         <a-card title="里程" :headStyle="headStyle" size="small">
           <a-row>
             <a-col :span="12">
-              <a-statistic title="全部里程" :value="123" />
+              <a-statistic title="全部里程" :value="res.mileage_total || 0" />
             </a-col>
             <a-col :span="12">
-              <a-statistic title="已完成里程" :value="123" />
+              <a-statistic title="已完成里程" :value="res.mileage_complete || 0" />
             </a-col>
           </a-row>
         </a-card>
@@ -208,13 +210,18 @@ onMounted(() => {
     <a-card title="路线信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="columns"
-        :data-source="homeData.process"
+        :data-source="res.res"
         :pagination="false"
         :bordered="true"
       >
-        <template #status="{ record }">
+        <template #wk_assignee="{ record }">
           <div>
-            <a-tag color="green" v-if="record.status == 0">正常</a-tag>
+            <a-tag color="green">{{record.wk_assignee.username}}</a-tag>
+          </div>
+        </template>
+        <template #qa_assignee="{ record }">
+          <div>
+            <a-tag color="green">{{record.qa_assignee.username}}</a-tag>
           </div>
         </template>
         <template #project_process="{ record }">
@@ -238,7 +245,7 @@ onMounted(() => {
         </template>
       </a-table>
     </a-card>
-    <a-card title="桩号信息" class="mt-3" :headStyle="headStyle" size="small">
+    <!-- <a-card title="桩号信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="stationColumns"
         :data-source="homeData.process"
@@ -270,8 +277,8 @@ onMounted(() => {
           </span>
         </template>
       </a-table>
-    </a-card>
-    <a-card title="标注统计信息" class="mt-3" :headStyle="headStyle" size="small">
+    </a-card> -->
+    <!-- <a-card title="标注统计信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table
         :columns="tagColumns"
         :data-source="homeData.process"
@@ -303,7 +310,7 @@ onMounted(() => {
           </span>
         </template>
       </a-table>
-    </a-card>
+    </a-card> -->
   </div>
 </template>
 
