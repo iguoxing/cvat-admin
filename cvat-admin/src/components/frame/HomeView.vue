@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-25 19:42:40
+ * @LastEditTime: 2022-10-26 20:38:54
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -52,10 +52,10 @@ const columns = [
     title: "任务状态",
     dataIndex: "task_status",
   },
-  {
-    title: "截止日期",
-    dataIndex: "end_date",
-  },
+  // {
+  //   title: "截止日期",
+  //   dataIndex: "end_date",
+  // },
 ];
 
 const stationColumns = [
@@ -221,7 +221,7 @@ onMounted(() => {
         </template>
         <template #qa_assignee="{ record }">
           <div>
-            <a-tag color="green">{{record.qa_assignee.username}}</a-tag>
+            <a-tag color="blue">{{record.qa_assignee.username}}</a-tag>
           </div>
         </template>
         <template #project_process="{ record }">
