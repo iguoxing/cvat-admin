@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-10-21 17:54:16
+ * @LastEditTime: 2022-10-27 16:25:46
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -20,17 +20,17 @@ const pname = JSON.parse(localStorage.projectInfo).name
 const projectTitle = "桩号列表" + (pname ? "-" + pname : "");
 const columns = [
   {
-    title: "任务ID",
+    title: "ID",
     dataIndex: "id",
   },
   {
-    title: "任务名称",
+    title: "任务名",
     dataIndex: "name",
   },
-  {
-    title: "路线名称",
-    dataIndex: "project_name",
-  },
+  // {
+  //   title: "路线名",
+  //   dataIndex: "project_name",
+  // },
   // {
   //   title: "开始时间",
   //   dataIndex: "project_start_date",
@@ -40,12 +40,12 @@ const columns = [
   //   dataIndex: "project_end_date",
   // },
   {
-    title: "识别人员",
+    title: "识别人",
     dataIndex: "wk_assignee",
     slots: { customRender: "wk_assignee" },
   },
   {
-    title: "核实人员",
+    title: "核实人",
     dataIndex: "qa_assignee",
     slots: { customRender: "qa_assignee" },
   },
@@ -57,11 +57,11 @@ const columns = [
   //   title: "结束桩号",
   //   dataIndex: "end_station",
   // },
-  {
-    title: "创建时间",
-    dataIndex: "created_date",
-    slots: { customRender: "created_date" },
-  },
+  // {
+  //   title: "创建时间",
+  //   dataIndex: "created_date",
+  //   slots: { customRender: "created_date" },
+  // },
   {
     title: "更新时间",
     dataIndex: "updated_date",
@@ -76,11 +76,11 @@ const columns = [
   //   dataIndex: "segments",
   // },
   {
-    title: "已标注图片数",
+    title: "已标注",
     dataIndex: "frame_worked",
   },
   {
-    title: "所有图片数目",
+    title: "总图数",
     dataIndex: "size",
   },
   {
@@ -366,7 +366,7 @@ onMounted(() => {
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <a @click="editClick(record)">编辑</a>
+        <a @click="editClick(record)"><a-tag color="orange">编辑</a-tag></a>
       </template>
       <!-- <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}

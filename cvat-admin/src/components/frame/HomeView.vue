@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-26 20:38:54
+ * @LastEditTime: 2022-10-27 17:27:57
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
@@ -17,6 +17,10 @@ const headStyle = {
 const cardStyle = {
   "padding-right": "20px",
 };
+const bg1Style = {background: "#f3ada180",};
+const bg2Style = {background: "#4fe44e4f",};
+const bg3Style = {background: "#e3e44e5c",};
+const bg4Style = {background: "#4ee4d845",};
 const columns = [
   {
     title: "路线",
@@ -179,22 +183,34 @@ onMounted(() => {
 
 <template>
   <div class="greetings">
-    <a-row class="text-left ant-search">
-      <a-col :span="12" :style="cardStyle">
-        <!-- <a-card title="项目"> -->
-        <a-card title="路线" :headStyle="headStyle" size="small">
-          <a-row>
-            <a-col :span="12">
-              <a-statistic title="全部路线" :value="res.projects_total || 0" />
-            </a-col>
-            <a-col :span="12">
-              <a-statistic title="已完成路线" :value="res.projects_complete || 0" />
-            </a-col>
-          </a-row>
-        </a-card>
+    <a-row>
+      <a-col :span="24">
+        <a-row :gutter="24">
+          <a-col :span="6">
+            <!-- title="路线"  -->
+            <a-card :headStyle="headStyle" :bodyStyle="bg1Style">
+              <a-statistic title="全部路线" :value="res.projects_total || 0" class="bg-opacity-25"/>
+            </a-card>
+          </a-col>
+          <a-col :span="6">
+            <a-card :headStyle="headStyle" :bodyStyle="bg3Style">
+              <a-statistic title="已完成路线" :value="res.projects_complete || 0" :value-style="{ color: '#3f8600' }"/>
+            </a-card>
+          </a-col>
+          <a-col :span="6">
+            <a-card :headStyle="headStyle" :bodyStyle="bg2Style">
+              <a-statistic title="全部里程" :value="res.mileage_total || 0"/>
+            </a-card>
+          </a-col>
+          <a-col :span="6">
+            <a-card :headStyle="headStyle" :bodyStyle="bg4Style">
+              <a-statistic title="已完成里程" :value="res.mileage_complete || 0" :value-style="{ color: '#3f8600' }"/>
+            </a-card>
+          </a-col>
+        </a-row>
       </a-col>
       <!-- <a-col :span="2"></a-col> -->
-      <a-col :span="12">
+      <!-- <a-col :span="12">
         <a-card title="里程" :headStyle="headStyle" size="small">
           <a-row>
             <a-col :span="12">
@@ -205,7 +221,7 @@ onMounted(() => {
             </a-col>
           </a-row>
         </a-card>
-      </a-col>
+      </a-col> -->
     </a-row>
     <a-card title="路线信息" class="mt-3" :headStyle="headStyle" size="small">
       <a-table

@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-10-20 10:51:21
+ * @LastEditTime: 2022-10-27 15:53:38
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -344,9 +344,11 @@ onMounted(() => {
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <a @click="editClick(record)">编辑</a>
-        <a-divider type="vertical" />
-        <a @click="deleteItem(record)">删除</a>
+        <a @click="editClick(record)" class="mr-3">
+          <a-tag color="orange">编辑</a-tag>
+        </a>
+        <!-- <a-divider type="vertical" /> -->
+        <a @click="deleteItem(record)"><a-tag color="red">删除</a-tag></a>
       </template>
     </a-table>
     <a-modal

@@ -115,7 +115,7 @@ onMounted(() => {
         {{record.complete_task_num}} / {{record.all_task_num}}
       </template>
       <template #operate="{ record }">
-        <a @click="edit(record)">编辑</a>
+        <a @click="edit(record)"><a-tag color="orange">编辑</a-tag></a>
       </template>
     </a-table>
   </div>
