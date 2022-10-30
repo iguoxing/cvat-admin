@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-10-19 20:41:38
+ * @LastEditTime: 2022-10-27 16:55:51
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -13,25 +13,26 @@ import dayjs from "dayjs";
 
 const columns = [
   {
-    title: "任务ID",
+    title: "ID",
     dataIndex: "id",
   },
   {
-    title: "任务名称",
+    title: "任务名",
     dataIndex: "name",
   },
   {
-    title: "路线名称",
+    title: "路线名",
     dataIndex: "project_name",
   },
   {
-    title: "开始时间",
+    title: "开始/结束时间",
     dataIndex: "project_start_date",
+    slots: { customRender: "project_start_date" },
   },
-  {
-    title: "结束时间",
-    dataIndex: "project_end_date",
-  },
+  // {
+  //   title: "结束时间",
+  //   dataIndex: "project_end_date",
+  // },
   // {
   //   title: "标注人员",
   //   dataIndex: "wk_assignee",
@@ -41,13 +42,14 @@ const columns = [
   //   dataIndex: "qa_assignee",
   // },
   {
-    title: "开始桩号",
+    title: "起止桩号",
     dataIndex: "start_station",
+    slots: { customRender: "start_station" },
   },
-  {
-    title: "结束桩号",
-    dataIndex: "end_station",
-  },
+  // {
+  //   title: "结束桩号",
+  //   dataIndex: "end_station",
+  // },
   {
     title: "创建时间",
     dataIndex: "created_date",
@@ -62,11 +64,11 @@ const columns = [
   //   dataIndex: "segments",
   // },
   {
-    title: "已标注图片数",
+    title: "已标注",
     dataIndex: "frame_worked",
   },
   {
-    title: "所有图片数目",
+    title: "总图数",
     dataIndex: "size",
   },
   // {
@@ -146,6 +148,12 @@ onMounted(() => {
       :bordered="true"
       @change="handleTableChange"
     >
+      <template #project_start_date="{ record }">
+        {{ record.project_start_date }}~{{ record.project_end_date }}
+      </template>
+      <template #start_station="{ record }">
+        {{ record.start_station }}~{{ record.end_station }}
+      </template>
       <template #created_date="{ record }">
         {{ dayjs(record.created_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
