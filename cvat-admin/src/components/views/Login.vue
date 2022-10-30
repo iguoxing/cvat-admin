@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-25 10:16:40
+ * @LastEditTime: 2022-10-30 20:21:08
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -10,7 +10,7 @@
     <a-layout>
       <a-layout-content>
         <div class="login-div">
-          <a-card title="iSTL 标注平台管理端" bodyStyle="{padding:24px}">
+          <a-card title="iSTL 标注平台管理端V1.0" bodyStyle="{padding:24px}">
             <!-- {{ msg }}--<button @click="count++">{{ count }}</button> -->
             <a-input v-model:value="account" placeholder="请输入手机号或邮箱" />
             <a-input-password
