@@ -45,7 +45,13 @@ var option: EChartsOption;
     series: [
       {
         type: 'pie',
-        radius: '50%',
+        radius: '40%',
+        label: {
+          normal: {
+            show: true,
+            formatter: '{b}:{d}%'
+          }
+        },
         data: props.chartData
         // [
         //   { value: 1048, name: 'Search Engine' },
@@ -93,8 +99,8 @@ onMounted(() => {
 
 <style scoped>
 .chart-box {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     background-color: #eee;
 }
 </style>
