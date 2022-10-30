@@ -46,7 +46,7 @@ function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "/api/users",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/users",
       params: {
         // page: 1,
         // page_size: 10,
