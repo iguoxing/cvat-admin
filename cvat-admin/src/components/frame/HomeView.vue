@@ -101,6 +101,7 @@ const res = ref([]);
 const road = ref([]);
 const task = ref([]);
 let isTask = ref(false);
+let chartList = ref([]);
 let projectName = ref('');
 
 function getData(pid) {
@@ -119,7 +120,10 @@ function getData(pid) {
   promise.then((result: any) => {
     if (result) {
       res.value = result;
-      console.log(res.value);
+      chartList.value = isTask.value ? result.proj_stat : result.all_stat;
+      // console.log('result.all_stat', result.all_stat);
+    } else {
+      chartList.value = [];
     }
   });
 }
@@ -303,7 +307,16 @@ onMounted(() => {
       </template>
       </a-table>
     </a-card>
-    <PieChart />
+    <a-row :gutter="24" class="m-8">
+      <a-col  v-for="(chartData, index) in chartList"
+        :key="`chart${chartData.template_id}`"
+        class="chart-container">
+        <PieChart
+        :title="chartData.template_name"
+        :chartData="chartData.items.map(d => ({value: d.used_times, name: d.label_name}))"
+        />
+      </a-col>
+    </a-row>
   </div>
 </template>
 

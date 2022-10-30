@@ -1,49 +1,89 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, PropType, ref, watch } from "vue";
 import * as echarts from 'echarts/core';
+import {
+  TitleComponent,
+  TitleComponentOption,
+  TooltipComponent,
+  TooltipComponentOption,
+  LegendComponent,
+  LegendComponentOption
+} from 'echarts/components';
 import { PieChart, PieSeriesOption } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 
-echarts.use([PieChart, CanvasRenderer, LabelLayout]);
-
 type EChartsOption = echarts.ComposeOption<
-  | TitleComponentOption
-  | TooltipComponentOption
-  | LegendComponentOption
-  | PieSeriesOption
+  |TitleComponent
+  |TooltipComponentOption
+  |PieSeriesOption
 >;
 
-function darwChart() {
-  type EChartsOption = echarts.ComposeOption<PieSeriesOption>;
+const chartBox = ref();
+echarts.use([PieChart, TitleComponent, TooltipComponent, CanvasRenderer, LabelLayout]);
+const myChart = ref(null);
+const props = defineProps({
+  title: String,
+  chartData: {
+    type: Array,
+    default: () => [],
+    required: true,
+  }
+})
 
-  var myChart = echarts.init(chartBox.value!);
-  var option: EChartsOption;
+var option: EChartsOption;
 
   option = {
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    title: {
+      text: props.title || '',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
         radius: '50%',
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ]
+        data: props.chartData
+        // [
+        //   { value: 1048, name: 'Search Engine' },
+        //   { value: 735, name: 'Direct' },
+        //   { value: 580, name: 'Email' },
+        //   { value: 484, name: 'Union Ads' },
+        //   { value: 300, name: 'Video Ads' }
+        // ]
       }
     ]
   };
 
-  option && myChart.setOption(option);
+function darwChart() {
+  myChart.value = echarts.init(chartBox.value!);
+
+  option && myChart.value.setOption(option);
 }
 
-const chartBox = ref();
+
+watch(
+  () => props.chartData,
+  (newVal, oldVal) => {
+    console.log('watch', newVal);
+    option.series[0].data = newVal;
+    option && myChart.value.setOption(option);
+  }
+)
+watch(
+  () => props.title,
+  (newVal, oldVal) => {
+    console.log('watch', newVal);
+    option.title.text = newVal;
+    option && myChart.value.setOption(option);
+  }
+)
 onMounted(() => {
-  console.log('chartBox', chartBox.value);
   darwChart();
+  // window.addEventListener('resize', resizeHandler);
 })
 </script>
 
