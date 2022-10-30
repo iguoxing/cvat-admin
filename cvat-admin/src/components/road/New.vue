@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-21 18:21:38
+ * @LastEditTime: 2022-10-30 17:02:18
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -43,8 +43,22 @@ let form = ref({
 });
 const rules = {
   name: [{ required: true, message: "请填写名称", trigger: "blur" }],
-  // date: [{ required: true, message: "请选择项目时间", trigger: "blur" }],
+  date: [{ required: true, message: "请填写项目时间", trigger: "change", validator: validateDates }],
+  label_id: [{ required: true, message: "请填写标签模板", trigger: "blur" }],
+  qa_rate: [{ required: true, message: "请填写抽检比例", trigger: "blur" }],
+  qa_segment: [{ required: true, message: "请填写抽检段数", trigger: "blur" }],
+  org_width: [{ required: true, message: "请填写图片实际宽度", trigger: "blur" }],
+  org_height: [{ required: true, message: "请填写图片实际高度", trigger: "blur" }],
+  files_path: [
+    { required: true, message: "请填写图片文件夹", trigger: "blur" },
+  ],
 };
+
+function validateDates(rule, value) {
+  if (value === '') {
+    return Promise.reject('请填写项目时间')
+  }
+}
 
 function getProjectInfo() {
   const promise = new Promise((resolve, reject) => {
@@ -79,7 +93,7 @@ function getProjectInfo() {
 
 pid && getProjectInfo();
 
-function addRoad(road){
+function addRoad(road) {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "post",
@@ -95,7 +109,7 @@ function addRoad(road){
   });
 }
 
-function editRoad(road){
+function editRoad(road) {
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "PATCH",
@@ -125,7 +139,6 @@ function save() {
   } else {
     addRoad(form.value);
   }
-  
 }
 
 function getTemplateList() {
@@ -148,7 +161,7 @@ function getTemplateList() {
 function chooseLabel() {
   form.value.labels = [];
   templateList.value.forEach((value: any) => {
-    if (form.value.label_id.includes(value.id) ) {
+    if (form.value.label_id.includes(value.id)) {
       value.labels.forEach((item: any) => {
         form.value.labels.push({
           name: item.name,
@@ -163,7 +176,7 @@ function chooseLabel() {
       // form.value.labels = value.labels;
     }
   });
-  console.log(form.value.labels)
+  console.log(form.value.labels);
 }
 
 function cancel() {
@@ -209,17 +222,17 @@ onMounted(() => {
           class="ml-3"
         />
       </a-form-item>
-      <a-form-item label="图片文件夹">
+      <a-form-item label="图片文件夹" ref="files_path" name="files_path">
         <a-input
           v-model:value="form.files_path"
           placeholder="请填写图片文件夹"
         />
       </a-form-item>
-      <a-form-item label="标签模板">
+      <a-form-item label="标签模板" name="label_id">
         <a-select
           mode="multiple"
           v-model:value="form.label_id"
-          placeholder="请选择"
+          placeholder="请选择标签模板"
           @change="chooseLabel"
           :allowClear="true"
           v-show="!pid"
@@ -256,28 +269,28 @@ onMounted(() => {
         </a-row>
         <div></div>
       </a-form-item>
-      <a-form-item label="抽检比例">
+      <a-form-item label="抽检比例" name="qa_rate">
         <a-input
           class="w-1/2"
           v-model:value="form.qa_rate"
           placeholder="请填写1-100范围内的整数"
         />%
       </a-form-item>
-      <a-form-item label="抽检段数">
+      <a-form-item label="抽检段数" name="qa_segment">
         <a-input
           class="w-1/2"
           v-model:value="form.qa_segment"
           placeholder="请填写抽检段数"
         />
       </a-form-item>
-      <a-form-item label="图片宽度">
+      <a-form-item label="图片宽度" name="org_width">
         <a-input
           class="w-1/2"
           v-model:value="form.org_width"
           placeholder="请填写图片实际宽度"
         />
       </a-form-item>
-      <a-form-item label="图片高度">
+      <a-form-item label="图片高度" name="org_height">
         <a-input
           class="w-1/2"
           v-model:value="form.org_height"
