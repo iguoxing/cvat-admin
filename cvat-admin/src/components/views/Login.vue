@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-30 20:21:08
+ * @LastEditTime: 2022-10-31 17:13:48
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -67,6 +67,7 @@ function goTo() {
   promise.then((result: any) => {
     if (result && result.key) {
       localStorage.token = result.key;
+      localStorage.personinfo = JSON.stringify(result.info);
       router.push({ name: "home" });
     }
   });

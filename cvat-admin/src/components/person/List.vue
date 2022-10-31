@@ -3,7 +3,13 @@ import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
-
+const roleOptions = {
+  admin:"管理员",
+  business:"项目经理",
+  user:"用户",
+  worker:"标注员",
+  qa:"质检员",
+}
 const columns = [
   {
     title: "人员ID",
@@ -104,6 +110,11 @@ onMounted(() => {
       <template #dateJoined="{ text }">
         <span>
           {{dayjs(text).format("YYYY-MM-DD HH:mm:ss")}}
+        </span>
+      </template>
+      <template #tags="{ text }">
+        <span v-for="(label, i) in text" :key="'l' + i">
+          {{roleOptions[label]}}
         </span>
       </template>
       <template #activeStatus="{ text }">

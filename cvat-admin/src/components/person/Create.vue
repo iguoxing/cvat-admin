@@ -5,9 +5,10 @@ import axios from "../../stores/interface";
 import dayjs from "dayjs";
 const roleOptions = [
   { label: "管理员", value: "admin" },
-  { label: "项目经理", value: "business" },
-  { label: "用户", value: "user" },
+  // { label: "项目经理", value: "business" },
+  // { label: "用户", value: "user" },
   { label: "标注员", value: "worker" },
+  { label: "质检员", value: "qa" },
 ];
 const staffOptions = [
   { label: '是', value: true },

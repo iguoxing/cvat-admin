@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-10-25 19:03:35
+ * @LastEditTime: 2022-10-31 17:51:42
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -17,6 +17,8 @@ import {
   TeamOutlined,
   UserOutlined,
   DownOutlined,
+  LogoutOutlined,
+  EditOutlined,
 } from "@ant-design/icons-vue";
 
 import axios from "../../stores/interface";
@@ -34,6 +36,8 @@ const subMenu = ref("");
 const isRouterAlive = ref(true);
 const router = useRouter();
 const route = useRoute();
+const personInfo = JSON.parse(localStorage.personinfo);
+// debugger;
 
 onMounted(() => {
   // console.log(router)
@@ -87,6 +91,10 @@ function setMenu(val: string) {
   return k;
 }
 
+function gotoChange() {
+  window.open("");
+}
+
 function exitLogin() {
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -107,7 +115,24 @@ function exitLogin() {
   <a-layout id="components-layout-demo-custom-trigger" class="frame">
     <!-- v-model:collapsed="collapsed" -->
     <a-layout-sider :trigger="null" collapsible class="sideMenu">
-      <div class="logo">iSTL 管理端</div>
+      <div class="logo">
+        <!-- iSTL 管理端 -->
+        <img src="https://s2.loli.net/2022/10/31/PXTwao7jthVvLlE.png" class="ml-3"/>
+        <a
+          href="http://43.138.66.202:8080/projects?page=1"
+          target="_blank"
+          class="ml-6 mr-3"
+        >
+          路线
+        </a>
+        <a
+          href="http://43.138.66.202:8080/tasks?page=1"
+          target="_blank"
+          class="mr-3"
+        >
+          桩号
+        </a>
+      </div>
       <!-- theme="dark" -->
       <a-menu
         mode="inline"
@@ -139,20 +164,22 @@ function exitLogin() {
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <div class="page-header">
-          <a
-            href="http://43.138.66.202:8080/projects?page=1"
-            target="_blank"
-            class="mr-3"
-          >
-            <a-tag class="ant-hand" color="blue">返回项目列表</a-tag>
-          </a>
-          <a
-            href="http://43.138.66.202:8080/tasks?page=1"
-            target="_blank"
-            class="mr-3"
-          >
-            <a-tag class="ant-hand" color="cyan">返回任务列表</a-tag>
-          </a>
+          <!-- <div>
+            <a
+              href="http://43.138.66.202:8080/projects?page=1"
+              target="_blank"
+              class="ml-6 mr-3"
+            >
+              路线
+            </a>
+            <a
+              href="http://43.138.66.202:8080/tasks?page=1"
+              target="_blank"
+              class="mr-3"
+            >
+              桩号
+            </a>
+          </div> -->
           <!-- <a href="http://43.138.66.202:8080" target="_blank" class="mr-3">
             <a-tag class="ant-hand" color="blue">跳转到标注端</a-tag>
           </a> -->
@@ -165,27 +192,27 @@ function exitLogin() {
           </a> -->
           <a-dropdown class="pre-step" :offset="1">
             <a class="ant-dropdown-link" @click.prevent>
-              <a-avatar size="small">
-                <template #icon>
-                  <UserOutlined />
-                </template>
-              </a-avatar>
-              <span class="pre-step">
-                测试
+              <UserOutlined />
+              <span class="ml-3">
+                {{ personInfo.username }}
                 <!-- {{ person.name }} -->
               </span>
               <DownOutlined />
             </a>
             <template #overlay>
               <a-menu>
+                <!-- <a-menu-item @click="gotoChange" class="text-center">
+                  <EditOutlined /> 更改密码
+                </a-menu-item> -->
                 <a-menu-item @click="exitLogin" class="text-center">
-                  <a-tag
+                  <LogoutOutlined /> 登出
+                  <!-- <a-tag
                     class="ant-hand"
                     color="#f50"
                     type="danger"
                     size="small"
                     >退出</a-tag
-                  >
+                  > -->
                 </a-menu-item>
               </a-menu>
             </template>
@@ -234,14 +261,20 @@ function exitLogin() {
 }
 
 #components-layout-demo-custom-trigger .logo {
-  margin: 16px;
-  height: 37px;
+  display: flex;
+  align-items: center;
+  /* margin: 16px; */
+  height: 64px;
+  /* height: 37px; */
+  background: #72bbf7;
+  /* background: url(https://s2.loli.net/2022/10/31/PXTwao7jthVvLlE.png); */
   /* background: url(../../assets/img/logo.png); */
-  background-size: 96%;
+  background-size: contain;
+  /* background-size: 96%; */
   background-repeat: no-repeat;
   text-align: center;
-  font-size: 24px;
-  color: #6f4f4f;
+  font-size: 15px;
+  color: #000;
 }
 .layout-content {
   display: inline-block;
@@ -257,10 +290,12 @@ function exitLogin() {
 }
 .page-header {
   display: flex;
+  /* justify-content: space-between; */
   justify-content: flex-end;
   align-items: center;
   width: 100%;
   padding-right: 8px;
+  background: #72bbf7;
 }
 .msg-icon {
   font-size: 18px;
@@ -270,7 +305,7 @@ function exitLogin() {
   display: block;
 }
 
-.ant-layout  .ant-layout-sider {
+.ant-layout .ant-layout-sider {
   background: #fff;
   /* background: #282c34; */
   color: #fff;
