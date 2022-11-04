@@ -24,3 +24,6 @@ button.ant-btn-primary{
   padding-left: 0;
   padding-top: 0;
 }
+.ant-layout-header .ant-dropdown-trigger .anticon, .ant-layout-content .anticon {
+  vertical-align: 0.125em;
+}

@@ -3,6 +3,8 @@ import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
+import { EditOutlined } from "@ant-design/icons-vue";
+
 const roleOptions = {
   admin:"管理员",
   business:"项目经理",
@@ -126,7 +128,10 @@ onMounted(() => {
         {{record.complete_task_num}} / {{record.all_task_num}}
       </template>
       <template #operate="{ record }">
-        <a @click="edit(record)"><a-tag color="orange">编辑</a-tag></a>
+        <a @click="edit(record)">
+          <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
+          <!-- <a-tag color="orange">编辑</a-tag> -->
+        </a>
       </template>
     </a-table>
   </div>

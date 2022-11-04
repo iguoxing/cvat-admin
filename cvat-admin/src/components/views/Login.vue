@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-10-31 17:13:48
+ * @LastEditTime: 2022-11-04 18:47:25
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -68,7 +68,12 @@ function goTo() {
     if (result && result.key) {
       localStorage.token = result.key;
       localStorage.personinfo = JSON.stringify(result.info);
-      router.push({ name: "home" });
+      const groups = result && result.info && result.info.groups
+      if (groups.includes("admin")) {
+        router.push({ name: "home" });
+      } else {
+        window.open(import.meta.env.VITE_APP_BASE_URL, "_self");
+      }
     }
   });
 }

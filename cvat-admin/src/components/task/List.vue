@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-10-27 16:55:51
+ * @LastEditTime: 2022-11-04 18:38:05
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -11,6 +11,11 @@ import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 
+const statusType = {
+  annotation: "标注",
+  validation: "质检",
+  completed: "完成",
+};
 const columns = [
   {
     title: "ID",
@@ -58,6 +63,7 @@ const columns = [
   {
     title: "状态",
     dataIndex: "status",
+    slots: { customRender: "status" },
   },
   // {
   //   title: "job信息",
@@ -154,6 +160,9 @@ onMounted(() => {
       <template #start_station="{ record }">
         {{ record.start_station }}~{{ record.end_station }}
       </template>
+      <template #status="{ record }">
+          {{ statusType[record.status] }}
+        </template>
       <template #created_date="{ record }">
         {{ dayjs(record.created_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>

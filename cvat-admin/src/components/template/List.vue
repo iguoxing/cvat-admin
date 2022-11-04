@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-10-27 15:53:38
+ * @LastEditTime: 2022-11-04 18:07:27
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -12,6 +12,10 @@ import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons-vue";
 import type { FormInstance } from "ant-design-vue";
+import {
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons-vue";
 
 const route = useRoute();
 
@@ -345,10 +349,14 @@ onMounted(() => {
       </template>
       <template #operate="{ record }">
         <a @click="editClick(record)" class="mr-3">
-          <a-tag color="orange">编辑</a-tag>
+          <!-- <a-tag color="orange">编辑</a-tag> -->
+          <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
-        <a @click="deleteItem(record)"><a-tag color="red">删除</a-tag></a>
+        <a @click="deleteItem(record)">
+          <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
+          <!-- <a-tag color="red">删除</a-tag> -->
+        </a>
       </template>
     </a-table>
     <a-modal

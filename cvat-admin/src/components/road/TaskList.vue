@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-10-30 16:22:53
+ * @LastEditTime: 2022-11-04 18:37:55
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -18,6 +18,11 @@ const route = useRoute();
 const pid = route.params && route.params.id;
 const pname = JSON.parse(localStorage.projectInfo).name
 const projectTitle = "桩号列表" + (pname ? "-" + pname : "");
+const statusType = {
+  annotation: "标注",
+  validation: "质检",
+  completed: "完成",
+};
 const columns = [
   {
     title: "ID",
@@ -70,6 +75,7 @@ const columns = [
   {
     title: "状态",
     dataIndex: "status",
+    slots: { customRender: "status" },
   },
   // {
   //   title: "job信息",
@@ -346,6 +352,9 @@ onMounted(() => {
       <template #updated_date="{ record }">
         {{ dayjs(record.updated_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
+      <template #status="{ record }">
+          {{ statusType[record.status] }}
+        </template>
       <template #wk_assignee="{ record }">
         {{ record.wk_assignee && record.wk_assignee.username }}
         <!-- <a-select
@@ -366,7 +375,10 @@ onMounted(() => {
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <a @click="editClick(record)"><a-tag color="orange">编辑</a-tag></a>
+        <a @click="editClick(record)">
+          <!-- <a-tag color="orange">编辑</a-tag> -->
+          <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
+        </a>
       </template>
       <!-- <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}

@@ -1,13 +1,18 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-10-30 16:11:49
+ * @LastEditTime: 2022-11-04 18:37:33
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import {
+  EditOutlined,
+  MenuUnfoldOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons-vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
 
@@ -17,6 +22,11 @@ const labelType = {
   ellipse: "椭圆",
   polyline: "多边形",
   tag: "标签",
+};
+const statusType = {
+  annotation: "标注",
+  validation: "质检",
+  completed: "完成",
 };
 
 const columns = [
@@ -69,6 +79,7 @@ const columns = [
   {
     title: "状态",
     dataIndex: "status",
+    slots: { customRender: "status" },
   },
   {
     title: "操作",
@@ -200,6 +211,9 @@ onMounted(() => {
         {{ record.station_list[0] ? record.station_list[0] : "-" }} -
         {{ record.station_list[1] ? record.station_list[1] : "-" }}
       </template>
+      <template #status="{ record }">
+          {{ statusType[record.status] }}
+        </template>
       <template #qa_rate="{ record }"> {{ record.qa_rate }}% </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
@@ -210,15 +224,16 @@ onMounted(() => {
       </template>
       <template #operate="{ record }">
         <a @click="edit(record)" class="mr-3">
-          <a-tag color="orange">编辑</a-tag>
+          <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
         <a @click="stationList(record)" class="mr-3">
-          <a-tag color="cyan">桩号列表</a-tag>
+          <a-tag color="#1890ff"><MenuUnfoldOutlined /> 桩号列表</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
         <a @click="deleteItem(record)">
-          <a-tag color="red">删除</a-tag>
+          <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
+          <!-- <a-tag color="red">删除</a-tag> -->
         </a>
         <!-- <a-divider type="vertical" />
         <a @click="newStation(record)">新建桩号</a> -->

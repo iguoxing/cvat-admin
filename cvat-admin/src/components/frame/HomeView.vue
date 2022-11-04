@@ -1,15 +1,27 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-10-30 16:33:40
+ * @LastEditTime: 2022-11-04 18:35:43
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import {
+  MenuUnfoldOutlined,
+  AreaChartOutlined,
+  RiseOutlined,
+  FundOutlined,
+  StockOutlined,
+} from "@ant-design/icons-vue";
 import axios from "../../stores/interface";
 import PieChart from "../charts/PieChart.vue";
 import dayjs from "dayjs";
+const statusType = {
+  annotation: "标注",
+  validation: "质检",
+  completed: "完成",
+};
 
 const headStyle = {
   "font-weight": 600,
@@ -19,7 +31,7 @@ const headStyle = {
 const cardStyle = {
   "padding-right": "20px",
 };
-const bg1Style = { background: "#f3ada180" };
+const bg1Style = { background: "#1890ff " };
 const bg2Style = { background: "#4fe44e4f" };
 const bg3Style = { background: "#e3e44e5c" };
 const bg4Style = { background: "#4ee4d845" };
@@ -51,6 +63,7 @@ const columns = [
   {
     title: "状态",
     dataIndex: "status",
+    slots: { customRender: "status" },
   },
   {
     title: "操作",
@@ -82,6 +95,7 @@ const stationColumns = [
   {
     title: "状态",
     dataIndex: "status",
+    slots: { customRender: "status" },
   },
   {
     title: "已标注",
@@ -102,7 +116,7 @@ const road = ref([]);
 const task = ref([]);
 let isTask = ref(false);
 let chartList = ref([]);
-let projectName = ref('');
+let projectName = ref("");
 
 function getData(pid) {
   const promise = new Promise((resolve, reject) => {
@@ -153,12 +167,16 @@ function getList() {
 
 function getTask(item) {
   isTask.value = true;
-  projectName.value = '任务统计-' + item.name
+  projectName.value = "任务统计-" + item.name;
   getData(item.id);
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + item.id + "/tasks",
+      url:
+        import.meta.env.VITE_APP_BASE_URL +
+        "api/projects/" +
+        item.id +
+        "/tasks",
       params: {
         page: 1,
         page_size: 1000,
@@ -175,7 +193,7 @@ function getTask(item) {
   });
 }
 
-function goToHome(){
+function goToHome() {
   isTask.value = false;
   getData(0);
 }
@@ -187,42 +205,59 @@ onMounted(() => {
 
 <template>
   <div class="greetings">
-    <a-page-header title="主页" v-show="!isTask"/>
-    <a-page-header :title="projectName" @back="goToHome" v-show="isTask"/>
+    <a-page-header title="主页" v-show="!isTask" />
+    <a-page-header :title="projectName" @back="goToHome" v-show="isTask" />
     <a-row>
       <a-col :span="24">
         <a-row :gutter="24">
           <a-col :span="6">
             <!-- title="路线"  -->
-            <a-card :headStyle="headStyle" :bodyStyle="bg1Style">
+            <a-card :headStyle="headStyle">
               <a-statistic
                 title="全部路线"
                 :value="res.projects_total || 0"
                 class="bg-opacity-25"
-              />
+              >
+                <template #prefix>
+                  <AreaChartOutlined />
+                </template>
+              </a-statistic>
             </a-card>
           </a-col>
           <a-col :span="6">
-            <a-card :headStyle="headStyle" :bodyStyle="bg3Style">
+            <a-card :headStyle="headStyle">
               <a-statistic
                 title="已完成路线"
                 :value="res.projects_complete || 0"
                 :value-style="{ color: '#3f8600' }"
-              />
+              >
+                <template #prefix>
+                  <!-- <LineChartOutlined /> -->
+                  <RiseOutlined />
+                </template>
+              </a-statistic>
             </a-card>
           </a-col>
           <a-col :span="6">
-            <a-card :headStyle="headStyle" :bodyStyle="bg2Style">
-              <a-statistic title="全部里程" :value="res.mileage_total || 0" />
+            <a-card :headStyle="headStyle">
+              <a-statistic title="全部里程" :value="res.mileage_total || 0">
+                <template #prefix>
+                  <FundOutlined />
+                </template>
+              </a-statistic>
             </a-card>
           </a-col>
           <a-col :span="6">
-            <a-card :headStyle="headStyle" :bodyStyle="bg4Style">
+            <a-card :headStyle="headStyle">
               <a-statistic
                 title="已完成里程"
                 :value="res.mileage_complete || 0"
                 :value-style="{ color: '#3f8600' }"
-              />
+              >
+                <template #prefix>
+                  <StockOutlined />
+                </template>
+              </a-statistic>
             </a-card>
           </a-col>
         </a-row>
@@ -252,6 +287,9 @@ onMounted(() => {
           {{ record.frame_worked ? record.frame_worked : "-" }} /
           {{ record.frame_num ? record.frame_num : "-" }}
         </template>
+        <template #status="{ record }">
+          {{ statusType[record.status] }}
+        </template>
 
         <template #station_list="{ record }">
           {{ record.station_list[0] ? record.station_list[0] : "-" }} -
@@ -262,7 +300,7 @@ onMounted(() => {
         </template>
         <template #operate="{ record }">
           <a @click="getTask(record)">
-            <a-tag color="cyan">桩号统计</a-tag>
+            <a-tag color="#1890ff"><MenuUnfoldOutlined /> 桩号统计</a-tag>
           </a>
         </template>
         <template #construction_period="{ record }">
@@ -296,24 +334,36 @@ onMounted(() => {
         :pagination="false"
         :bordered="true"
       >
-      <template #updated_date="{ record }">
-        {{ dayjs(record.updated_date).format("YYYY-MM-DD HH:mm:ss") }}
-      </template>
-      <template #wk_assignee="{ record }">
-        {{ record.wk_assignee && record.wk_assignee.username }}
-      </template>
-      <template #qa_assignee="{ record }">
-        {{ record.qa_assignee && record.qa_assignee.username }}
-      </template>
+        <template #updated_date="{ record }">
+          {{ dayjs(record.updated_date).format("YYYY-MM-DD HH:mm:ss") }}
+        </template>
+        <template #wk_assignee="{ record }">
+          {{ record.wk_assignee && record.wk_assignee.username }}
+        </template>
+        <template #status="{ record }">
+          {{ statusType[record.status] }}
+        </template>
+        <template #qa_assignee="{ record }">
+          {{ record.qa_assignee && record.qa_assignee.username }}
+        </template>
       </a-table>
     </a-card>
     <a-row :gutter="24" class="m-8">
-      <a-col  v-for="(chartData, index) in chartList"
+      <a-col
+        :span="12"
+        v-for="(chartData, index) in chartList"
         :key="`chart${chartData.template_id}`"
-        class="chart-container">
+        class="chart-container"
+        style="display: flex; justify-content: center"
+      >
         <PieChart
-        :title="chartData.template_name"
-        :chartData="chartData.items.map(d => ({value: d.used_times, name: d.label_name}))"
+          :title="chartData.template_name"
+          :chartData="
+            chartData.items.map((d) => ({
+              value: d.used_times,
+              name: d.label_name,
+            }))
+          "
         />
       </a-col>
     </a-row>

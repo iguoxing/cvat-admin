@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-10-30 17:02:18
+ * @LastEditTime: 2022-11-04 18:24:54
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -40,6 +40,7 @@ let form = ref({
   qa_segment: "3",
   org_width: "80",
   org_height: "80",
+  image_quality: "70",
 });
 const rules = {
   name: [{ required: true, message: "请填写名称", trigger: "blur" }],
@@ -49,6 +50,7 @@ const rules = {
   qa_segment: [{ required: true, message: "请填写抽检段数", trigger: "blur" }],
   org_width: [{ required: true, message: "请填写图片实际宽度", trigger: "blur" }],
   org_height: [{ required: true, message: "请填写图片实际高度", trigger: "blur" }],
+  image_quality: [{ required: true, message: "请填写图片质量", trigger: "blur" }],
   files_path: [
     { required: true, message: "请填写图片文件夹", trigger: "blur" },
   ],
@@ -85,6 +87,7 @@ function getProjectInfo() {
         qa_segment: result.qa_segment,
         org_width: result.org_width,
         org_height: result.org_height,
+        image_quality: result.image_quality,
         labels: result.labels,
       };
     }
@@ -296,6 +299,13 @@ onMounted(() => {
           v-model:value="form.org_height"
           placeholder="请填写图片实际高度"
         />
+      </a-form-item>
+      <a-form-item label="图片质量" name="image_quality">
+        <a-input-number
+          class="w-1/2" :min="1" :max="100"
+          v-model:value="form.image_quality"
+          placeholder="请填写1-100范围内的整数"
+        />%
       </a-form-item>
     </a-form>
     <a-row type="flex" justify="center" align="start" class="mt-3">
