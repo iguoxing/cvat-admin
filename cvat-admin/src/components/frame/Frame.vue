@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-11-04 18:47:49
+ * @LastEditTime: 2022-11-07 10:02:19
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -117,7 +117,8 @@ function exitLogin() {
     <a-layout-sider :trigger="null" collapsible class="sideMenu">
       <div class="logo">
         <!-- iSTL 管理端 -->
-        <span class="ml-3 text-xl font-bold">ISTL</span>
+        <!-- <span class="ml-3 text-xl font-bold">ISTL</span> -->
+        <img src="../../assets/ISTL.svg" class="ml-3"/>
         <!-- <img src="https://s2.loli.net/2022/10/31/PXTwao7jthVvLlE.png" class="ml-3"/> -->
         <a
           href="http://43.138.66.202:8080/projects?page=1"

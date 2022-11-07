@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-11-04 18:07:27
+ * @LastEditTime: 2022-11-07 10:06:16
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -339,9 +339,11 @@ onMounted(() => {
       </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
-          {{ tag.name }} <a-tag :color="tag.color">{{ tag.color }}</a-tag> 【{{
-            labelType[tag.type]
-          }}】
+          <a-col :span="8">{{ tag.name }}</a-col>
+          <a-col :span="8"><a-tag :color="tag.color">{{ tag.color }}</a-tag></a-col>
+          <a-col :span="8">
+            【{{labelType[tag.type]}}】
+          </a-col>
         </a-row>
       </template>
       <template #qa_assignee="{ record }">
