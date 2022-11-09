@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-11-09 14:51:20
+ * @LastEditTime: 2022-11-09 15:18:25
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -122,6 +122,9 @@ function exitLogin() {
         <!-- <img src="https://s2.loli.net/2022/10/31/PXTwao7jthVvLlE.png" class="ml-3"/> -->
         <a href="http://43.138.66.202:8080/" target="_blank" class="ml-6 mr-3">
           路线
+        </a>
+        <a href="http://43.138.66.202:8080/" target="_blank" class="mr-3">
+          桩号
         </a>
         <!-- <a
           href="http://43.138.66.202:8080/projects?page=1"
