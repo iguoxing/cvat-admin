@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-11-07 10:02:19
+ * @LastEditTime: 2022-11-09 14:51:20
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -120,20 +120,23 @@ function exitLogin() {
         <!-- <span class="ml-3 text-xl font-bold">ISTL</span> -->
         <img src="../../assets/ISTL.svg" class="ml-3"/>
         <!-- <img src="https://s2.loli.net/2022/10/31/PXTwao7jthVvLlE.png" class="ml-3"/> -->
-        <a
+        <a href="http://43.138.66.202:8080/" target="_blank" class="ml-6 mr-3">
+          路线
+        </a>
+        <!-- <a
           href="http://43.138.66.202:8080/projects?page=1"
           target="_blank"
           class="ml-6 mr-3"
         >
           路线
-        </a>
-        <a
+        </a> -->
+        <!-- <a
           href="http://43.138.66.202:8080/tasks?page=1"
           target="_blank"
           class="mr-3"
         >
           桩号
-        </a>
+        </a> -->
       </div>
       <!-- theme="dark" -->
       <a-menu

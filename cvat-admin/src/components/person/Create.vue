@@ -95,8 +95,8 @@ function save() {
       last_name: '',
       email: formState.email,
       groups: [formState.role],
-      is_staff: true,
-      is_superuser: true,
+      is_staff: formState.role === 'admin' ? true : false,
+      is_superuser: formState.role === 'admin' ? true : false,
       is_active: true,
     };
   } else {
@@ -106,6 +106,8 @@ function save() {
       username: formState.username,
       password: formState.password,
       groups: [formState.role],
+      is_staff: formState.role === 'admin' ? true : false,
+      is_superuser:  formState.role === 'admin' ? true : false,
     };
   }
   console.log(data);
