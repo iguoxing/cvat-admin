@@ -1,7 +1,7 @@
 /*
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:02:16
- * @LastEditTime: 2022-10-13 15:46:10
+ * @LastEditTime: 2022-11-21 17:19:08
  * @FilePath: /cvat-admin/src/stores/interface.ts
  * @Description: file information
  */
@@ -13,7 +13,7 @@ import { message } from "ant-design-vue";
 axios.interceptors.request.use(
   function (config) {
     if (localStorage.token && config.headers) {
-       config.headers.Authorization = "Token " + localStorage.token
+      config.headers.Authorization = "Token " + localStorage.token
     }
     // localStorage.token && (config.headers.Authorization = "Token " + localStorage.token);
     // config.headers.Authorization = "Bearer " + localStorage.token;
@@ -47,7 +47,10 @@ axios.interceptors.response.use(
   },
   function (error) {
     // 对响应错误做点什么
-    message.error(error.msg || "请求失败!");
+    console.log('error', error)
+    if (error && error.response && error.response.data) {
+      message.error(error.response.data || "请求失败!");
+    }
     return Promise.reject(error);
   }
 );

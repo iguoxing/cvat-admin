@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-11-21 15:58:36
+ * @LastEditTime: 2022-11-21 16:48:02
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -132,8 +132,8 @@ function editRoad(road) {
 }
 
 function save() {
-  console.log(form);
-  console.log(form.value);
+  // console.log(form);
+  // console.log(form.value);
   if (form.value && form.value.startDate) {
     form.value.start_date = dayjs(form.value.startDate).format("YYYY-MM-DD");
   }
@@ -295,14 +295,14 @@ onMounted(() => {
           class="w-1/2"
           v-model:value="form.org_width"
           placeholder="请填写图片实际宽度"
-        />
+        />m
       </a-form-item>
       <a-form-item label="图片高度" name="org_height">
         <a-input
           class="w-1/2"
           v-model:value="form.org_height"
           placeholder="请填写图片实际高度"
-        />
+        />m
       </a-form-item>
       <a-form-item label="图片质量" name="image_quality">
         <a-input-number
