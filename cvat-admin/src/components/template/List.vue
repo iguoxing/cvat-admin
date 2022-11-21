@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-11-07 10:06:16
+ * @LastEditTime: 2022-11-21 16:04:59
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -130,6 +130,7 @@ function initTask() {
   dynamicValidateForm.labels.push({
     id: undefined,
     name: "",
+    code: "",
     color: "#333",
     type: "rectangle",
     attributes: [],
@@ -165,6 +166,7 @@ const inputStyle = "width: 120px; margin-right: 8px";
 interface Domain {
   id: number | undefined;
   name: string;
+  code: string,
   color: string;
   type: string;
   attributes: [];
@@ -183,6 +185,7 @@ let dynamicValidateForm = reactive<{
     {
       id: undefined,
       name: "",
+      code: "",
       color: "#333",
       type: "rectangle",
       attributes: [],
@@ -195,6 +198,7 @@ const addDomain = () => {
   dynamicValidateForm.labels.push({
     id: undefined,
     name: "",
+    code: "",
     color: "#333",
     type: "rectangle",
     attributes: [],
@@ -283,6 +287,7 @@ function editClick(item) {
     dynamicValidateForm.labels.push({
       id: item.id,
       name: item.name,
+      code: item.code,
       color: item.color,
       attributes: item.attributes,
       type: item.type,
@@ -339,9 +344,9 @@ onMounted(() => {
       </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">
-          <a-col :span="8">{{ tag.name }}</a-col>
+          <a-col :span="8">{{ tag.name }}{{ tag.code?'['+tag.code+']':null }}</a-col>
           <a-col :span="8"><a-tag :color="tag.color">{{ tag.color }}</a-tag></a-col>
-          <a-col :span="8">
+          <a-col :span="6">
             【{{labelType[tag.type]}}】
           </a-col>
         </a-row>
@@ -351,20 +356,18 @@ onMounted(() => {
       </template>
       <template #operate="{ record }">
         <a @click="editClick(record)" class="mr-3">
-          <!-- <a-tag color="orange">编辑</a-tag> -->
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
         <a @click="deleteItem(record)">
           <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
-          <!-- <a-tag color="red">删除</a-tag> -->
         </a>
       </template>
     </a-table>
     <a-modal
       v-model:visible="visible"
       title="维护模板"
-      width="800px"
+      width="880px"
       @ok="handleOk"
     >
       <a-form
@@ -408,6 +411,12 @@ onMounted(() => {
           <a-input
             v-model:value="domain.name"
             placeholder="输入名称"
+            :style="inputStyle"
+          />
+          <span>损坏编码: </span>
+          <a-input
+            v-model:value="domain.code"
+            placeholder="输入编码"
             :style="inputStyle"
           />
           <span>颜色: </span>

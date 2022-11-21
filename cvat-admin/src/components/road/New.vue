@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-11-04 18:24:54
+ * @LastEditTime: 2022-11-21 15:58:36
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -41,6 +41,7 @@ let form = ref({
   org_width: "80",
   org_height: "80",
   image_quality: "70",
+  grid_size: "10",
 });
 const rules = {
   name: [{ required: true, message: "请填写名称", trigger: "blur" }],
@@ -51,6 +52,7 @@ const rules = {
   org_width: [{ required: true, message: "请填写图片实际宽度", trigger: "blur" }],
   org_height: [{ required: true, message: "请填写图片实际高度", trigger: "blur" }],
   image_quality: [{ required: true, message: "请填写图片质量", trigger: "blur" }],
+  grid_size: [{ required: true, message: "请填写表格尺寸", trigger: "blur" }],
   files_path: [
     { required: true, message: "请填写图片文件夹", trigger: "blur" },
   ],
@@ -88,6 +90,7 @@ function getProjectInfo() {
         org_width: result.org_width,
         org_height: result.org_height,
         image_quality: result.image_quality,
+        grid_size: result.grid_size,
         labels: result.labels,
       };
     }
@@ -169,6 +172,7 @@ function chooseLabel() {
         form.value.labels.push({
           name: item.name,
           color: item.color,
+          code: item.code,
           attributes: item.attributes,
           type: item.type,
           template_id: item.template_id,
@@ -249,7 +253,7 @@ onMounted(() => {
         </a-select>
         <a-row v-for="(tag, index) in form.labels" :key="'t_' + index">
           <a-col :span="6">
-            <span>{{ tag.name }}</span>
+            <span>{{ tag.name }} {{tag.code?'['+tag.code+']':null}}</span>
           </a-col>
           <a-col :span="6">
             <!-- <span>{{ tag.color }}</span> -->
@@ -306,6 +310,9 @@ onMounted(() => {
           v-model:value="form.image_quality"
           placeholder="请填写1-100范围内的整数"
         />%
+      </a-form-item>
+      <a-form-item label="表格尺寸" name="grid_size">
+        <a-input class="w-1/2" v-model:value="form.grid_size" placeholder="请填写表格尺寸"/>cm
       </a-form-item>
     </a-form>
     <a-row type="flex" justify="center" align="start" class="mt-3">
