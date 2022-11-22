@@ -23,7 +23,7 @@ let labelType = ref([
   { id: "rectangle", name: "矩形" },
   // { id: "bbox", name: "矩形" },
   { id: "ellipse", name: "椭圆" },
-  { id: "polyline", name: "多边形" },
+  { id: "polyline", name: "曲线" },
   { id: "tag", name: "标签" },
 ]);
 let form = ref({

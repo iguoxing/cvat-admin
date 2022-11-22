@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-11-21 16:04:59
+ * @LastEditTime: 2022-11-22 16:58:07
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -24,14 +24,14 @@ const labelType = {
   // bbox: "矩形",
   rectangle: "矩形",
   ellipse: "椭圆",
-  polyline: "多边形",
+  polyline: "曲线",
   tag: "标签",
 };
 const labelTypeArr = ref([
   { id: "rectangle", name: "矩形" },
   // { id: "bbox", name: "矩形" },
   { id: "ellipse", name: "椭圆" },
-  { id: "polyline", name: "多边形" },
+  { id: "polyline", name: "曲线" },
   { id: "tag", name: "标签" },
 ]);
 const columns = [

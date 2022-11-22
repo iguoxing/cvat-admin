@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-11-04 18:37:55
+ * @LastEditTime: 2022-11-22 17:14:18
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -237,13 +237,15 @@ let editForm = ref({
 });
 
 const addDomain = () => {
+  let len = dynamicValidateForm.domains.length
+  const obj = JSON.parse(JSON.stringify(dynamicValidateForm.domains[len-1]))
   dynamicValidateForm.domains.push({
     id: undefined,
     name: "",
-    start_station: "",
+    start_station: parseInt(obj.end_station) + 1,
     end_station: "",
-    wk_assignee_id: null,
-    qa_assignee_id: null,
+    wk_assignee_id: obj.wk_assignee_id,
+    qa_assignee_id: obj.qa_assignee_id,
     labels: [],
   });
 };

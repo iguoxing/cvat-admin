@@ -20,7 +20,7 @@ const labelType = {
   bbox: "矩形",
   rectangle: "矩形",
   ellipse: "椭圆",
-  polyline: "多边形",
+  polyline: "曲线",
   tag: "标签",
 };
 const statusType = {
