@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-11-22 17:14:18
+ * @LastEditTime: 2022-11-30 11:55:29
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -12,6 +12,7 @@ import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons-vue";
 import type { FormInstance } from "ant-design-vue";
+import { message } from "ant-design-vue";
 
 const route = useRoute();
 
@@ -22,6 +23,12 @@ const statusType = {
   annotation: "标注",
   validation: "质检",
   completed: "完成",
+};
+const statusProgress = {
+  Queued: "排队中",
+  Started: "创建中",
+  Finished: "已完成创建",
+  Failed: "创建失败",
 };
 const columns = [
   {
@@ -71,6 +78,10 @@ const columns = [
     title: "更新时间",
     dataIndex: "updated_date",
     slots: { customRender: "updated_date" },
+  },
+  {
+    title: "创建进度",
+    dataIndex: "progressDesc"
   },
   {
     title: "状态",
@@ -137,11 +148,16 @@ function getList() {
     });
   });
 
-  promise.then((result: any) => {
+  promise.then((result: any) =>{
     if (result) {
+      if(result.results && result.results.length>0){
+        result.results.forEach(async (value) => {
+          await progress(value)
+        })
+      }
       res.value = result.results;
       pagination.value.total = result.count;
-      console.log(res.value);
+      // console.log(res.value);
     }
   });
 }
@@ -287,6 +303,33 @@ const handleOk = () => {
     }
   });
 };
+function progress(item){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks/" + item.id + "/status",
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      // "Queued"  排队中
+      // "Started", 创建中
+      // "Finished", 已完成创建
+      // "Failed" 创建失败
+      if(result.state === 'Started'){
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+result.progress+'%');
+        item.progressDesc = statusProgress[result.state] + '('+result.progress+'%)'
+      }else {
+        item.progressDesc = statusProgress[result.state]
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
+      }
+      console.log(result);
+    }
+  });
+}
 function editClick(item: { id: any; name: any; start_station: any; end_station: any; wk_assignee: { id: any; }; qa_assignee: { id: any; }; }){
   editvisible.value = true;
   dynamicValidateForm.domains = []
@@ -377,8 +420,10 @@ onMounted(() => {
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
+        <a @click="progress(record)">
+          <a-tag color="#1890ff"><EditOutlined /> 查看进度</a-tag>
+        </a>
         <a @click="editClick(record)">
-          <!-- <a-tag color="orange">编辑</a-tag> -->
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
       </template>
