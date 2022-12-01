@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-11-21 16:48:02
+ * @LastEditTime: 2022-12-01 17:14:22
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -36,10 +36,10 @@ let form = ref({
   files_path: "/hzf_test/",
   label_id: [],
   labels: [],
-  qa_rate: "50",
+  qa_rate: "10",
   qa_segment: "3",
-  org_width: "80",
-  org_height: "80",
+  org_width: "3.5",
+  org_height: "2",
   image_quality: "70",
   grid_size: "10",
 });

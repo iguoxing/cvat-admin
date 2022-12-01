@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-28 17:35:35
- * @LastEditTime: 2022-11-28 15:33:31
+ * @LastEditTime: 2022-12-01 17:30:14
  * @FilePath: /cvat-admin/src/components/views/Login.vue
  * @Description: file information
 -->
@@ -20,7 +20,10 @@
             <a-button type="primary" @click="goTo" @keyup.enter="goTo" block>
               登录
             </a-button>
-            <a-tag color="blue" class="mt-3">推荐使用<a href="http://chrome.data3d.com.cn/" target="_blank" style="text-decoration:underline;">谷歌浏览器</a>，您将获得最佳使用体验~</a-tag>
+            <div class="mt-3">
+              推荐使用<a href="http://chrome.data3d.com.cn/" target="_blank" style="text-decoration:underline;">谷歌浏览器</a>，您将获得最佳使用体验~
+            </div>
+            <!-- <a-tag color="blue" class="mt-3"></a-tag> -->
           </a-card>
         </div>
       </a-layout-content>

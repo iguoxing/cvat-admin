@@ -12,6 +12,7 @@ const roleOptions = {
   worker:"标注员",
   qa:"质检员",
 }
+const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 const columns = [
   {
     title: "人员ID",
@@ -56,8 +57,8 @@ function getList() {
       method: "get",
       url: import.meta.env.VITE_APP_BASE_URL + "api/users",
       params: {
-        // page: 1,
-        // page_size: 10,
+        page: pagination.value.current || 1,
+        page_size: pagination.value.pageSize || 10,
         // filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
         // search: 'name'
       },
@@ -69,10 +70,18 @@ function getList() {
   promise.then((result: any) => {
     if (result) {
       res.value = result.results;
-      console.log(res.value);
+      pagination.value.total = result.count;
     }
   });
 };
+
+function handleTableChange(page: { current: number }) {
+  if (page && page.current) {
+    pagination.value.current = page.current;
+  }
+  // debugger
+  getList();
+}
 
 function edit(item: { id: string; }) {
   console.log('--', item);
@@ -106,8 +115,9 @@ onMounted(() => {
     <a-table
       :columns="columns"
       :data-source="res"
-      :pagination="false"
+      :pagination="pagination"
       :bordered="true"
+      @change="handleTableChange"
     >
       <template #dateJoined="{ text }">
         <span>
