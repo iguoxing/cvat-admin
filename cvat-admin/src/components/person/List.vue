@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
-import { EditOutlined } from "@ant-design/icons-vue";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
 const roleOptions = {
   admin:"管理员",
@@ -95,6 +95,21 @@ function edit(item: { id: string; }) {
   });
 }
 
+function deleteItem(item) {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "delete",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/users/" + item.id,
+    }).then(function (data) {
+      resolve(data);
+    });
+  });
+
+  promise.then((result: any) => {
+    getList();
+  });
+}
+
 onMounted(() => {
   getList()
 });
@@ -140,7 +155,9 @@ onMounted(() => {
       <template #operate="{ record }">
         <a @click="edit(record)">
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
-          <!-- <a-tag color="orange">编辑</a-tag> -->
+        </a>
+        <a @click="deleteItem(record)">
+            <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
         </a>
       </template>
     </a-table>
