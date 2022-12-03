@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { useRouter, useRoute } from "vue-router";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
+let name = ref('');
 const roleOptions = {
   admin:"管理员",
   business:"项目经理",
@@ -110,6 +111,30 @@ function deleteItem(item) {
   });
 }
 
+function searchName(){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/users",
+      params: {
+        page: pagination.value.current || 1,
+        page_size: pagination.value.pageSize || 10,
+        // filter: JSON.stringify(['name', 'owner', 'assignee', 'status', 'id', 'updated_date','start_date','end_date']),
+        search: name.value
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      res.value = result.results;
+      pagination.value.total = result.count;
+    }
+  });
+}
+
 onMounted(() => {
   getList()
 });
@@ -121,10 +146,20 @@ onMounted(() => {
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
         <a-page-header title="人员管理" />
-        <!-- <a-page-header title="人员管理" sub-title="Person Manage" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="handleCreate"> 新建人员 </a-button>
+      </a-col>
+    </a-row>
+    <a-row type="flex" justify="between" align="start" class="mb-3">
+      <a-col flex="1 1 200px">
+        <a-input
+          v-model:value="name"
+          placeholder="请填写名称"
+          class="w-1/2"
+          :allowClear="true"
+        />
+        <a-button @click="searchName" class="ml-3"> 新建人员 </a-button>
       </a-col>
     </a-row>
     <a-table

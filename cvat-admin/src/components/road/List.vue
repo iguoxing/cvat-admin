@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-11-04 18:37:33
+ * @LastEditTime: 2022-12-03 17:06:18
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -30,13 +30,17 @@ const statusType = {
 };
 
 const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-  },
+  // {
+  //   title: "ID",
+  //   dataIndex: "id",
+  // },
   {
     title: "名称",
     dataIndex: "name",
+  },
+  {
+    title: "路线编号",
+    dataIndex: "ppid",
   },
   {
     title: "开始/结束时间",
@@ -147,9 +151,15 @@ function getList() {
 
   promise.then((result: any) => {
     if (result) {
+      result.results.forEach((value, index, array) => {
+        let path = value.files_path.split('/')
+        if(path[2] && path[2].length>12){
+          let ppid=path[2].slice(9, 13)
+          value.ppid= ppid
+        }
+      })
       res.value = result.results;
       pagination.value.total = result.count;
-      console.log(res.value);
     }
   });
 }

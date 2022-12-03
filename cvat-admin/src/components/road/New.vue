@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-12-01 17:14:22
+ * @LastEditTime: 2022-12-03 16:49:13
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -19,6 +19,8 @@ const route = useRoute();
 const pid = route.params && route.params.id;
 
 let templateList = ref([]);
+let categroyList = ref([]);
+let subcategroyList = ref([]);
 let labelType = ref([
   { id: "rectangle", name: "矩形" },
   // { id: "bbox", name: "矩形" },
@@ -33,7 +35,8 @@ let form = ref({
   startDate: ref<Dayjs>(),
   endDate: ref<Dayjs>(),
   end_date: "",
-  files_path: "/hzf_test/",
+  files_path: "",
+  sub_path: "", // 二级图片路径
   label_id: [],
   labels: [],
   qa_rate: "10",
@@ -77,6 +80,7 @@ function getProjectInfo() {
   promise.then((result: any) => {
     if (result) {
       form.value = result;
+      let path = result.files_path && result.files_path.split('/')
       form.value = {
         name: result.name,
         describe: result.describe,
@@ -84,7 +88,8 @@ function getProjectInfo() {
         startDate: result.start_date ? dayjs(result.start_date) : dayjs(),
         endDate: result.start_date ? dayjs(result.end_date) : dayjs(),
         end_date: result.end_date,
-        files_path: result.files_path ? result.files_path : "/hzf_test/",
+        files_path: path[0],
+        sub_path: path[1],
         qa_rate: result.qa_rate,
         qa_segment: result.qa_segment,
         org_width: result.org_width,
@@ -100,6 +105,7 @@ function getProjectInfo() {
 pid && getProjectInfo();
 
 function addRoad(road) {
+  road.files_path = road.files_path + '/' + road.sub_path
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "post",
@@ -116,6 +122,7 @@ function addRoad(road) {
 }
 
 function editRoad(road) {
+  road.files_path = road.files_path + '/' + road.sub_path
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "PATCH",
@@ -164,6 +171,25 @@ function getTemplateList() {
   });
 }
 
+function getCatalogue(param) {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/server/share",
+      params: { directory: param },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      console.log(result)
+      categroyList.value = result
+    }
+  });
+}
+
 function chooseLabel() {
   form.value.labels = [];
   templateList.value.forEach((value: any) => {
@@ -186,11 +212,31 @@ function chooseLabel() {
   console.log(form.value.labels);
 }
 
+function chooseCategory() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/server/share",
+      params: { directory: form.value.files_path },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      console.log(result)
+      subcategroyList.value = result
+    }
+  });
+}
+
 function cancel() {
   router.go(-1);
 }
 onMounted(() => {
   getTemplateList();
+  getCatalogue('/');
 });
 </script>
 
@@ -230,10 +276,40 @@ onMounted(() => {
         />
       </a-form-item>
       <a-form-item label="图片文件夹" ref="files_path" name="files_path">
-        <a-input
+        <a-select
           v-model:value="form.files_path"
-          placeholder="请填写图片文件夹"
-        />
+          placeholder="请选择图片文件夹"
+          @change="chooseCategory"
+          :allowClear="true"
+        >
+          <a-select-option
+            :value="item.name"
+            v-for="(item, i) in categroyList"
+            :key="'la_' + i"
+            >{{ item.name }}</a-select-option
+          >
+        </a-select>
+      </a-form-item>
+      <!--  -->
+      <a-form-item
+        label="二级文件夹"
+        ref="sub_path"
+        name="sub_path"
+        v-show="form.files_path"
+      >
+        <a-select
+          v-model:value="form.sub_path"
+          placeholder="请选择二级图片文件夹"
+          @change="chooseCategory"
+          :allowClear="true"
+        >
+          <a-select-option
+            :value="item.name"
+            v-for="(item, i) in subcategroyList"
+            :key="'la_' + i"
+            >{{ item.name }}</a-select-option
+          >
+        </a-select>
       </a-form-item>
       <a-form-item label="标签模板" name="label_id">
         <a-select
