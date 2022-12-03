@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-11-30 11:55:29
+ * @LastEditTime: 2022-12-03 19:13:18
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -16,8 +16,15 @@ import { message } from "ant-design-vue";
 
 const route = useRoute();
 
+let categroyList = ref([]);
+let categroyObj = ref({
+  min:0,
+  max:0,
+});
 const pid = route.params && route.params.id;
-const pname = JSON.parse(localStorage.projectInfo).name
+const projectInfo = JSON.parse(localStorage.projectInfo)
+const pname = projectInfo.name
+const filesPath = projectInfo.files_path
 const projectTitle = "桩号列表" + (pname ? "-" + pname : "");
 const statusType = {
   annotation: "标注",
@@ -115,17 +122,15 @@ const visible = ref<boolean>(false);
 const editvisible = ref<boolean>(false);
 
 function onSelectChange(selectedKeys: []) {
-  console.log("selectedRowKeys changed: ", selectedKeys);
+  // console.log("selectedRowKeys changed: ", selectedKeys);
   selectedRowKeys.value = selectedKeys;
 }
 
 function edit(item: { id: string }) {
-  // console.log("item: ", item, );
   router.push("edit/" + item.id);
 }
 
 function handleTableChange(page: { current: number }) {
-  console.log("pagination: ", page);
   if (page && page.current) {
     pagination.value.current = page.current;
   }
@@ -174,7 +179,6 @@ function getTagList() {
   promise.then((result: any) => {
     if (result) {
       tagList.value = result.results;
-      console.log(tagList.value);
     }
   });
 }
@@ -326,7 +330,7 @@ function progress(item){
         item.progressDesc = statusProgress[result.state]
         message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
       }
-      console.log(result);
+      // console.log(result);
     }
   });
 }
@@ -364,9 +368,32 @@ function handlEditeOk(){
     }
   });
 }
+
+function getCatalogue() {
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/server/share",
+      params: { directory: filesPath, range: 1 },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      categroyList.value = result
+      categroyObj.value.min = result[0]
+      categroyObj.value.max = result[result.length-1]
+      console.log(categroyObj.value)
+    }
+  });
+}
+
 onMounted(() => {
   getList();
   getTagList();
+  getCatalogue()
 });
 </script>
 
@@ -447,6 +474,13 @@ onMounted(() => {
         :model="dynamicValidateForm"
         v-bind="formItemLayoutWithOutLabel"
       >
+        <a-form-item
+          v-bind="formItemLayout"
+          :label="'桩号范围'"
+          :name="['domains', index, 'value']"
+        >
+          <a-tag color="orange">{{categroyObj.min}}~{{categroyObj.max}}</a-tag>
+        </a-form-item>
         <a-form-item
           v-for="(domain, index) in dynamicValidateForm.domains"
           :key="'d' + index"
