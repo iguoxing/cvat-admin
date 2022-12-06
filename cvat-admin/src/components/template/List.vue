@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-11-22 16:58:07
+ * @LastEditTime: 2022-12-06 18:25:08
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -309,6 +309,11 @@ function deleteItem(item){
     getList();
   });
 }
+
+function cancelDelete(e){
+  console.log(e)
+}
+
 onMounted(() => {
   getList();
 });
@@ -359,9 +364,15 @@ onMounted(() => {
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
-        <a @click="deleteItem(record)">
+        <a-popconfirm
+          title="确认删除该标签模板吗?"
+          ok-text="确认"
+          cancel-text="取消"
+          @confirm="deleteItem(record)"
+          @cancel="cancelDelete"
+        >
           <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
-        </a>
+        </a-popconfirm>
       </template>
     </a-table>
     <a-modal

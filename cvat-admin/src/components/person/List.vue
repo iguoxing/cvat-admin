@@ -111,6 +111,10 @@ function deleteItem(item) {
   });
 }
 
+function cancelDelete(e){
+  console.log(e)
+}
+
 function searchName(){
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -191,9 +195,15 @@ onMounted(() => {
         <a @click="edit(record)">
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
-        <a @click="deleteItem(record)">
-            <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
-        </a>
+        <a-popconfirm
+          title="确认删除该人员吗?"
+          ok-text="确认"
+          cancel-text="取消"
+          @confirm="deleteItem(record)"
+          @cancel="cancelDelete"
+        >
+          <a-tag color="#1890ff"><EditOutlined /> 删除</a-tag>
+        </a-popconfirm>
       </template>
     </a-table>
   </div>

@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-12-03 17:06:18
+ * @LastEditTime: 2022-12-06 18:25:36
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -43,6 +43,15 @@ const columns = [
     dataIndex: "ppid",
   },
   {
+    title: "方向",
+    dataIndex: "direction",
+  },
+  {
+    title: "桩号",
+    dataIndex: "station_list",
+    slots: { customRender: "station_list" },
+  },
+  {
     title: "开始/结束时间",
     dataIndex: "start_date",
     slots: { customRender: "start_date" },
@@ -65,11 +74,6 @@ const columns = [
   //   title: "总图数",
   //   dataIndex: "frame_num",
   // },
-  {
-    title: "桩号",
-    dataIndex: "station_list",
-    slots: { customRender: "station_list" },
-  },
   {
     title: "抽检",
     dataIndex: "qa_rate",
@@ -153,9 +157,11 @@ function getList() {
     if (result) {
       result.results.forEach((value, index, array) => {
         let path = value.files_path.split('/')
-        if(path[2] && path[2].length>12){
-          let ppid=path[2].slice(9, 13)
+        if(path[1] && path[1].length>12){
+          let ppid=path[1].slice(9, 13)
           value.ppid= ppid
+          let direction=path[1].slice(13, 14)
+          value.direction= direction
         }
       })
       res.value = result.results;
@@ -177,6 +183,10 @@ function deleteItem(item) {
   promise.then((result: any) => {
     getList();
   });
+}
+
+function cancelDelete(e){
+  console.log(e)
 }
 
 onMounted(() => {
@@ -241,10 +251,15 @@ onMounted(() => {
           <a-tag color="#1890ff"><MenuUnfoldOutlined /> 桩号列表</a-tag>
         </a>
         <!-- <a-divider type="vertical" /> -->
-        <a @click="deleteItem(record)">
-          <a-tag color="#1890ff"><DeleteOutlined /> 删除</a-tag>
-          <!-- <a-tag color="red">删除</a-tag> -->
-        </a>
+        <a-popconfirm
+          title="确认删除该路线吗?"
+          ok-text="确认"
+          cancel-text="取消"
+          @confirm="deleteItem(record)"
+          @cancel="cancelDelete"
+        >
+          <a-tag color="#1890ff"><EditOutlined /> 删除</a-tag>
+        </a-popconfirm>
         <!-- <a-divider type="vertical" />
         <a @click="newStation(record)">新建桩号</a> -->
       </template>

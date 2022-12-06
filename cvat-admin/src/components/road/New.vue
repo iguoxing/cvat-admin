@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-12-03 16:49:13
+ * @LastEditTime: 2022-12-06 17:59:12
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -279,6 +279,7 @@ onMounted(() => {
         <a-select
           v-model:value="form.files_path"
           placeholder="请选择图片文件夹"
+          show-search
           @change="chooseCategory"
           :allowClear="true"
         >
@@ -299,6 +300,7 @@ onMounted(() => {
       >
         <a-select
           v-model:value="form.sub_path"
+          show-search
           placeholder="请选择二级图片文件夹"
           @change="chooseCategory"
           :allowClear="true"

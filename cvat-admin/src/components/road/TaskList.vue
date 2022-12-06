@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-12-03 19:13:18
+ * @LastEditTime: 2022-12-06 18:20:58
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -334,6 +334,24 @@ function progress(item){
     }
   });
 }
+function deleteClick(item){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "DELETE",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks/" + item.id,
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    message.success('已删除桩号' + item.name);
+    getList();
+  });
+}
+function cancelDelete(e){
+  console.log(e)
+}
 function editClick(item: { id: any; name: any; start_station: any; end_station: any; wk_assignee: { id: any; }; qa_assignee: { id: any; }; }){
   editvisible.value = true;
   dynamicValidateForm.domains = []
@@ -453,6 +471,15 @@ onMounted(() => {
         <a @click="editClick(record)">
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
+        <a-popconfirm
+          title="确认删除该桩号吗?"
+          ok-text="确认"
+          cancel-text="取消"
+          @confirm="deleteClick(record)"
+          @cancel="cancelDelete"
+        >
+          <a-tag color="#1890ff"><EditOutlined /> 删除</a-tag>
+        </a-popconfirm>
       </template>
       <!-- <template #complete_task_num="{ record }">
         {{record.complete_task_num}} / {{record.all_task_num}}
