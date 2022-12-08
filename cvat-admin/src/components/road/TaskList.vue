@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-12-06 18:20:58
+ * @LastEditTime: 2022-12-08 11:59:53
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -137,6 +137,34 @@ function handleTableChange(page: { current: number }) {
   // debugger
   getList();
 }
+function progress(item){
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks/" + item.id + "/status",
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      // "Queued"  排队中
+      // "Started", 创建中
+      // "Finished", 已完成创建
+      // "Failed" 创建失败
+      if(result.state === 'Started'){
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+result.progress+'%');
+        item.progressDesc = statusProgress[result.state] + '('+result.progress+'%)'
+      }else {
+        item.progressDesc = statusProgress[result.state]
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
+      }
+      // console.log(result);
+    }
+  });
+  return promise
+}
 function getList() {
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -156,9 +184,31 @@ function getList() {
   promise.then((result: any) =>{
     if (result) {
       if(result.results && result.results.length>0){
-        result.results.forEach(async (value) => {
-          await progress(value)
-        })
+        const getData = async (value) => {
+          return await new Promise((resolve) => {
+            setTimeout(() => {
+              let msg = progress(value)
+              // console.log(msg,Date.now()-dateNow)
+              resolve(msg)
+            }, 0)
+          })
+        }
+        const order = async (nums) => {
+          const promises = nums.map(async value => {
+            return await getData(value)
+          })
+          for (const data of promises) {
+            console.log(await data)
+            console.log(Date.now()-dateNow)
+          }
+          console.log(Date.now(), Date.now()-dateNow)
+        }
+        let dateNow=Date.now()
+        console.log(dateNow)
+        order(result.results)
+        // result.results.forEach(async (value) => {
+        //   await progress(value)
+        // })
       }
       res.value = result.results;
       pagination.value.total = result.count;
@@ -307,33 +357,7 @@ const handleOk = () => {
     }
   });
 };
-function progress(item){
-  const promise = new Promise((resolve, reject) => {
-    axios({
-      method: "get",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks/" + item.id + "/status",
-    }).then(function (data) {
-      resolve(data && data.data);
-    });
-  });
 
-  promise.then((result: any) => {
-    if (result) {
-      // "Queued"  排队中
-      // "Started", 创建中
-      // "Finished", 已完成创建
-      // "Failed" 创建失败
-      if(result.state === 'Started'){
-        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+result.progress+'%');
-        item.progressDesc = statusProgress[result.state] + '('+result.progress+'%)'
-      }else {
-        item.progressDesc = statusProgress[result.state]
-        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
-      }
-      // console.log(result);
-    }
-  });
-}
 function deleteClick(item){
   const promise = new Promise((resolve, reject) => {
     axios({
