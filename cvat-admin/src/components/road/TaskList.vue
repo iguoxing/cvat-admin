@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-12-08 11:59:53
+ * @LastEditTime: 2022-12-23 17:12:56
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -137,6 +137,9 @@ function handleTableChange(page: { current: number }) {
   // debugger
   getList();
 }
+function handleNumber (value){
+  return parseFloat(value).toFixed(2) + '%'
+}
 function progress(item){
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -154,8 +157,8 @@ function progress(item){
       // "Finished", 已完成创建
       // "Failed" 创建失败
       if(result.state === 'Started'){
-        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+result.progress+'%');
-        item.progressDesc = statusProgress[result.state] + '('+result.progress+'%)'
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'%');
+        item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+'%)'
       }else {
         item.progressDesc = statusProgress[result.state]
         message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
@@ -206,9 +209,6 @@ function getList() {
         let dateNow=Date.now()
         console.log(dateNow)
         order(result.results)
-        // result.results.forEach(async (value) => {
-        //   await progress(value)
-        // })
       }
       res.value = result.results;
       pagination.value.total = result.count;
