@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2022-12-06 18:25:36
+ * @LastEditTime: 2023-01-04 00:03:32
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -11,6 +11,7 @@ import { onMounted, ref, watch } from "vue";
 import {
   EditOutlined,
   MenuUnfoldOutlined,
+  DownloadOutlined,
   DeleteOutlined,
 } from "@ant-design/icons-vue";
 import axios from "../../stores/interface";
@@ -123,6 +124,28 @@ function stationList(item: { id: string }) {
   router.push("stationlist/" + item.id);
 }
 
+function getFile(item: { id: string }) {
+  console.log('getFile')
+  const promise = new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/stat_2",
+      params: {
+        down_stat: "proj_stat",
+        project_id: item.id,
+      },
+    }).then(function (data) {
+      resolve(data && data.data);
+    });
+  });
+
+  promise.then((result: any) => {
+    if (result) {
+      console.log(result)
+    }
+  });
+}
+
 function newStation(item: { id: string }) {
   // console.log("item: ", item, );
   setProjectPage(item);
@@ -199,16 +222,11 @@ onMounted(() => {
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
         <a-page-header title="路线管理" />
-        <!-- <a-page-header title="路线管理" sub-title="Road Manage" /> -->
       </a-col>
       <a-col>
         <a-button type="primary" @click="newRoad"> 新建路线 </a-button>
       </a-col>
     </a-row>
-    <!-- :row-selection="{
-        selectedRowKeys: selectedRowKeys.value,
-        onChange: onSelectChange,
-      }" -->
     <a-table
       :columns="columns"
       :data-source="res"
@@ -243,25 +261,46 @@ onMounted(() => {
         </a-row>
       </template>
       <template #operate="{ record }">
-        <a @click="edit(record)" class="mr-3">
-          <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
-        </a>
-        <!-- <a-divider type="vertical" /> -->
-        <a @click="stationList(record)" class="mr-3">
-          <a-tag color="#1890ff"><MenuUnfoldOutlined /> 桩号列表</a-tag>
-        </a>
-        <!-- <a-divider type="vertical" /> -->
-        <a-popconfirm
-          title="确认删除该路线吗?"
-          ok-text="确认"
-          cancel-text="取消"
-          @confirm="deleteItem(record)"
-          @cancel="cancelDelete"
-        >
-          <a-tag color="#1890ff"><EditOutlined /> 删除</a-tag>
-        </a-popconfirm>
-        <!-- <a-divider type="vertical" />
-        <a @click="newStation(record)">新建桩号</a> -->
+        <div class="flex">
+          <a @click="edit(record)" class="mr-1">
+            <a-popover>
+              <template #content>
+                <p>编辑</p>
+              </template>
+              <a-tag color="#1890ff"><EditOutlined /></a-tag>
+            </a-popover>
+          </a>
+          <a @click="stationList(record)" class="mr-1">
+            <a-popover>
+              <template #content>
+                <p>桩号列表</p>
+              </template>
+              <a-tag color="#1890ff"><MenuUnfoldOutlined /></a-tag>
+            </a-popover>
+          </a>
+          <a @click="getFile(record)" class="mr-1">
+            <a-popover>
+              <template #content>
+                <p>下载</p>
+              </template>
+              <a-tag color="#1890ff"><DownloadOutlined /></a-tag>
+            </a-popover>
+          </a>
+          <a-popconfirm
+            title="确认删除该路线吗?"
+            ok-text="确认"
+            cancel-text="取消"
+            @confirm="deleteItem(record)"
+            @cancel="cancelDelete"
+          >
+            <a-popover>
+              <template #content>
+                <p>删除</p>
+              </template>
+              <a-tag color="#1890ff"><DeleteOutlined /></a-tag>
+            </a-popover>
+          </a-popconfirm>
+        </div>
       </template>
     </a-table>
   </div>

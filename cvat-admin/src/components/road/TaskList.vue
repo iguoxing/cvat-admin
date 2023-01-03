@@ -1,12 +1,12 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2022-12-23 17:12:56
+ * @LastEditTime: 2023-01-03 23:46:04
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
 <script setup lang="ts">
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref, reactive,onBeforeUnmount } from "vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
@@ -17,6 +17,7 @@ import { message } from "ant-design-vue";
 const route = useRoute();
 
 let categroyList = ref([]);
+let timer = ref(0)
 let categroyObj = ref({
   min:0,
   max:0,
@@ -32,6 +33,7 @@ const statusType = {
   completed: "完成",
 };
 const statusProgress = {
+  Loading: "加载中...",
   Queued: "排队中",
   Started: "创建中",
   Finished: "已完成创建",
@@ -152,21 +154,28 @@ function progress(item){
 
   promise.then((result: any) => {
     if (result) {
-      // "Queued"  排队中
-      // "Started", 创建中
-      // "Finished", 已完成创建
-      // "Failed" 创建失败
       if(result.state === 'Started'){
         message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'%');
         item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+'%)'
       }else {
         item.progressDesc = statusProgress[result.state]
-        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
+        if(result.state !== 'Finished'){
+          message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
+        }
       }
       // console.log(result);
     }
   });
   return promise
+}
+function getOrders(order: any[]){
+  const getData = async (value) => {
+    value.progressDesc = "查询中..."
+    progress(value)
+  }
+  order.forEach((value) => {
+    getData(value)
+  })
 }
 function getList() {
   const promise = new Promise((resolve, reject) => {
@@ -187,32 +196,10 @@ function getList() {
   promise.then((result: any) =>{
     if (result) {
       if(result.results && result.results.length>0){
-        const getData = async (value) => {
-          return await new Promise((resolve) => {
-            setTimeout(() => {
-              let msg = progress(value)
-              // console.log(msg,Date.now()-dateNow)
-              resolve(msg)
-            }, 0)
-          })
-        }
-        const order = async (nums) => {
-          const promises = nums.map(async value => {
-            return await getData(value)
-          })
-          for (const data of promises) {
-            console.log(await data)
-            console.log(Date.now()-dateNow)
-          }
-          console.log(Date.now(), Date.now()-dateNow)
-        }
-        let dateNow=Date.now()
-        console.log(dateNow)
-        order(result.results)
+        getOrders(result.results)
       }
       res.value = result.results;
       pagination.value.total = result.count;
-      // console.log(res.value);
     }
   });
 }
@@ -436,6 +423,14 @@ onMounted(() => {
   getList();
   getTagList();
   getCatalogue()
+  timer.value = setInterval(() => {
+    getOrders(res.value)
+  }, 10000);
+});
+
+onBeforeUnmount(()=>{
+  clearInterval(timer.value)
+  timer.value = 0
 });
 </script>
 
