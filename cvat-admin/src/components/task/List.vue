@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-13 10:44:00
- * @LastEditTime: 2022-11-04 18:38:05
+ * @LastEditTime: 2023-01-04 22:07:38
  * @FilePath: /cvat-admin/src/components/task/List.vue
  * @Description: file information
 -->
@@ -10,6 +10,7 @@ import { onMounted, ref, watch } from "vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
+import handleMilesData from "../../utils/handleMiles.js";
 
 const statusType = {
   annotation: "标注",
@@ -158,16 +159,16 @@ onMounted(() => {
         {{ record.project_start_date }}~{{ record.project_end_date }}
       </template>
       <template #start_station="{ record }">
-        {{ record.start_station }}~{{ record.end_station }}
+        {{ handleMilesData(record.start_station) }}~{{ handleMilesData(record.end_station) }}
       </template>
       <template #status="{ record }">
-          {{ statusType[record.status] }}
+        {{ statusType[record.status] }}
         </template>
       <template #created_date="{ record }">
         {{ dayjs(record.created_date).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
       <!-- <template #station_list="{ record }">
-        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
+        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.end_station?record.end_station:'-'}}
       </template>
       <template #operate="{ record }">
         <a @click="edit(record)">编辑</a>

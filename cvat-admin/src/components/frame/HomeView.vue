@@ -1,12 +1,13 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-29 17:20:07
- * @LastEditTime: 2022-11-04 18:35:43
+ * @LastEditTime: 2023-01-04 22:07:13
  * @FilePath: /cvat-admin/src/components/frame/HomeView.vue
  * @Description: file information
 -->
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import handleMilesData from "../../utils/handleMiles.js";
 import {
   MenuUnfoldOutlined,
   AreaChartOutlined,
@@ -292,8 +293,10 @@ onMounted(() => {
         </template>
 
         <template #station_list="{ record }">
-          {{ record.station_list[0] ? record.station_list[0] : "-" }} -
-          {{ record.station_list[1] ? record.station_list[1] : "-" }}
+          {{ record.start_station ? handleMilesData(record.start_station) : "-" }} -
+          {{ record.end_station ? handleMilesData(record.end_station) : "-" }}
+          <!-- {{ record.station_list[0] ? handleMilesData(record.station_list[0]) : "-" }} -
+          {{ record.end_station ? handleMilesData(record.end_station) : "-" }} -->
         </template>
         <template #project_process="{ record }">
           <a-progress :percent="record.project_process" />

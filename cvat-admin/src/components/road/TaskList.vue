@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-03 23:46:04
+ * @LastEditTime: 2023-01-04 21:47:12
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons-vue";
 import type { FormInstance } from "ant-design-vue";
 import { message } from "ant-design-vue";
+import handleMilesData from "../../utils/handleMiles.js";
 
 const route = useRoute();
 
@@ -155,8 +156,8 @@ function progress(item){
   promise.then((result: any) => {
     if (result) {
       if(result.state === 'Started'){
-        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'%');
-        item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+'%)'
+        message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'');
+        item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+')'
       }else {
         item.progressDesc = statusProgress[result.state]
         if(result.state !== 'Finished'){
@@ -299,7 +300,7 @@ const addDomain = () => {
   dynamicValidateForm.domains.push({
     id: undefined,
     name: "",
-    start_station: parseInt(obj.end_station) + 1,
+    start_station: parseInt(obj.end_station), // +1
     end_station: "",
     wk_assignee_id: obj.wk_assignee_id,
     qa_assignee_id: obj.qa_assignee_id,
@@ -441,7 +442,7 @@ onBeforeUnmount(()=>{
         <a-page-header :title="projectTitle" @back="cancel" />
       </a-col>
       <a-col>
-        <a-button type="primary" @click="newStation"> 新建桩号 </a-button>
+        <a-button type="primary" danger @click="newStation" class="mt-1"> 新建桩号 </a-button>
       </a-col>
     </a-row>
     <!-- :row-selection="{
@@ -504,7 +505,7 @@ onBeforeUnmount(()=>{
         {{record.complete_task_num}} / {{record.all_task_num}}
       </template>
       <template #station_list="{ record }">
-        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.station_list[1]?record.station_list[1]:'-'}}
+        {{record.station_list[0]?record.station_list[0]:'-'}} / {{record.end_station?record.end_station:'-'}}
       </template>
        -->
     </a-table>
@@ -525,7 +526,7 @@ onBeforeUnmount(()=>{
           :label="'桩号范围'"
           :name="['domains', index, 'value']"
         >
-          <a-tag color="orange">{{categroyObj.min}}~{{categroyObj.max}}</a-tag>
+          <a-tag color="orange">{{handleMilesData(categroyObj.min)}}~{{handleMilesData(categroyObj.max)}}</a-tag>
         </a-form-item>
         <a-form-item
           v-for="(domain, index) in dynamicValidateForm.domains"

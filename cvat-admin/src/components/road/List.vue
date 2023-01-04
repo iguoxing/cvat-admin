@@ -1,13 +1,14 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2023-01-04 08:22:56
+ * @LastEditTime: 2023-01-04 22:06:25
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import handleMilesData from "../../utils/handleMiles.js";
 import {
   EditOutlined,
   MenuUnfoldOutlined,
@@ -16,6 +17,7 @@ import {
 } from "@ant-design/icons-vue";
 import axios from "../../stores/interface";
 import { useRouter, useRoute } from "vue-router";
+import { func } from "vue-types";
 
 const labelType = {
   bbox: "矩形",
@@ -125,7 +127,7 @@ function stationList(item: { id: string }) {
 }
 
 function getFile(item: { id: string }) {
-  console.log('getFile')
+  console.log("getFile");
   const promise = new Promise((resolve, reject) => {
     axios({
       method: "get",
@@ -141,7 +143,7 @@ function getFile(item: { id: string }) {
 
   promise.then((result: any) => {
     if (result) {
-      console.log(result)
+      console.log(result);
     }
   });
 }
@@ -159,6 +161,14 @@ function handleTableChange(page: { current: number }) {
   }
   // debugger
   getList();
+}
+function handleMiles(val: string | any[]) {
+  let len = val.length;
+  let leftNum = val.slice(0, len - 3);
+  let rightNum = val.slice(len - 3);
+  let res = parseInt(leftNum) + "." + parseInt(rightNum);
+  console.log("res", leftNum, rightNum, res);
+  return res;
 }
 function getList() {
   const promise = new Promise((resolve, reject) => {
@@ -179,14 +189,14 @@ function getList() {
   promise.then((result: any) => {
     if (result) {
       result.results.forEach((value, index, array) => {
-        let path = value.files_path.split('/')
-        if(path[1] && path[1].length>12){
-          let ppid=path[1].slice(9, 13)
-          value.ppid= ppid
-          let direction=path[1].slice(13, 14)
-          value.direction= direction
+        let path = value.files_path.split("/");
+        if (path[1] && path[1].length > 12) {
+          let ppid = path[1].slice(9, 13);
+          value.ppid = ppid;
+          let direction = path[1].slice(13, 14);
+          value.direction = direction;
         }
-      })
+      });
       res.value = result.results;
       pagination.value.total = result.count;
     }
@@ -208,8 +218,8 @@ function deleteItem(item) {
   });
 }
 
-function cancelDelete(e){
-  console.log(e)
+function cancelDelete(e) {
+  console.log(e);
 }
 
 onMounted(() => {
@@ -224,7 +234,9 @@ onMounted(() => {
         <a-page-header title="路线管理" />
       </a-col>
       <a-col>
-        <a-button type="primary" @click="newRoad"> 新建路线 </a-button>
+        <a-button class="mt-1" type="primary" danger @click="newRoad">
+          新建路线
+        </a-button>
       </a-col>
     </a-row>
     <a-table
@@ -246,12 +258,13 @@ onMounted(() => {
         {{ record.frame_num ? record.frame_num : "-" }}
       </template>
       <template #station_list="{ record }">
-        {{ record.station_list[0] ? record.station_list[0] : "-" }} -
-        {{ record.station_list[1] ? record.station_list[1] : "-" }}
+        {{ record.start_station ? handleMilesData(record.start_station) : "-" }}
+        -
+        {{ record.end_station ? handleMilesData(record.end_station) : "-" }}
       </template>
       <template #status="{ record }">
-          {{ statusType[record.status] }}
-        </template>
+        {{ statusType[record.status] }}
+      </template>
       <template #qa_rate="{ record }"> {{ record.qa_rate }}% </template>
       <template #labels="{ record }">
         <a-row v-for="(tag, index) in record.labels" :key="'l_' + index">

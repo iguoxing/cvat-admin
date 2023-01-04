@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-06 10:33:26
- * @LastEditTime: 2022-12-06 17:59:12
+ * @LastEditTime: 2023-01-04 09:13:13
  * @FilePath: /cvat-admin/src/components/road/New.vue
  * @Description: file information
 -->
@@ -17,6 +17,8 @@ const route = useRoute();
 // console.log("route: ", route);
 // console.log("route params: ", route.params);
 const pid = route.params && route.params.id;
+const pageTitle = pid?'维护路线':'新建路线'
+console.log('pageTitle',pid,pageTitle)
 
 let templateList = ref([]);
 let categroyList = ref([]);
@@ -242,7 +244,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <a-page-header title="维护路线" @back="cancel" />
+    <a-page-header :title="pageTitle" @back="cancel" />
     <a-form
       class="margin-top-1"
       :model="form"
@@ -361,13 +363,13 @@ onMounted(() => {
           placeholder="请填写1-100范围内的整数"
         />%
       </a-form-item>
-      <a-form-item label="抽检段数" name="qa_segment">
+      <!-- <a-form-item label="抽检段数" name="qa_segment">
         <a-input
           class="w-1/2"
           v-model:value="form.qa_segment"
           placeholder="请填写抽检段数"
         />
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item label="图片宽度" name="org_width">
         <a-input
           class="w-1/2"
