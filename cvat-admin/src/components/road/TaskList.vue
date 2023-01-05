@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-04 21:47:12
+ * @LastEditTime: 2023-01-05 23:44:13
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -119,6 +119,8 @@ const columns = [
 let selectedRowKeys = ref([]);
 const res = ref([]);
 const tagList = ref([]);
+const workerList = ref([]); // 识别人员
+const qaList = ref([]); // 核实人员
 const router = useRouter();
 const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 const visible = ref<boolean>(false);
@@ -217,6 +219,18 @@ function getTagList() {
   promise.then((result: any) => {
     if (result) {
       tagList.value = result.results;
+      let worker: any[] = [] // 识别人员
+      let qa = [] // 核实人员
+      result.results.forEach((value, index, array) => {
+        if(value.groups.includes("worker")){
+          worker.push(value)
+        }
+        if(value.groups.includes("qa")){
+          qa.push(value)
+        }
+      })
+      workerList.value = [...worker];
+      qaList.value = [...qa];
     }
   });
 }
@@ -300,7 +314,7 @@ const addDomain = () => {
   dynamicValidateForm.domains.push({
     id: undefined,
     name: "",
-    start_station: parseInt(obj.end_station), // +1
+    start_station: obj.end_station, // +1
     end_station: "",
     wk_assignee_id: obj.wk_assignee_id,
     qa_assignee_id: obj.qa_assignee_id,
@@ -467,19 +481,6 @@ onBeforeUnmount(()=>{
         </template>
       <template #wk_assignee="{ record }">
         {{ record.wk_assignee && record.wk_assignee.username }}
-        <!-- <a-select
-          v-model:value="editForm.qa_assignee_id"
-          placeholder="请选择"
-          :allowClear="true"
-          :style="inputStyle"
-        >
-          <a-select-option
-            :value="record.wk_assignee.id"
-            v-for="(item, i) in tagList"
-            :key="'qa' + i"
-            >{{ item.username }}</a-select-option
-          >
-        </a-select> -->
       </template>
       <template #qa_assignee="{ record }">
         {{ record.qa_assignee && record.qa_assignee.username }}
@@ -555,7 +556,7 @@ onBeforeUnmount(()=>{
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, i) in tagList"
+              v-for="(item, i) in workerList"
               :key="'wk' + i"
               >{{ item.username }}</a-select-option
             >
@@ -569,7 +570,7 @@ onBeforeUnmount(()=>{
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, i) in tagList"
+              v-for="(item, i) in qaList"
               :key="'qa' + i"
               >{{ item.username }}</a-select-option
             >
@@ -635,7 +636,7 @@ onBeforeUnmount(()=>{
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, i) in tagList"
+              v-for="(item, i) in workerList"
               :key="'wk' + i"
               >{{ item.username }}</a-select-option
             >
@@ -649,7 +650,7 @@ onBeforeUnmount(()=>{
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, i) in tagList"
+              v-for="(item, i) in qaList"
               :key="'qa' + i"
               >{{ item.username }}</a-select-option
             >

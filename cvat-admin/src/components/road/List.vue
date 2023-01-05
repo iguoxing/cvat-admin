@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2023-01-04 22:06:25
+ * @LastEditTime: 2023-01-05 23:43:02
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -291,14 +291,14 @@ onMounted(() => {
               <a-tag color="#1890ff"><MenuUnfoldOutlined /></a-tag>
             </a-popover>
           </a>
-          <a @click="getFile(record)" class="mr-1">
+          <!-- <a @click="getFile(record)" class="mr-1">
             <a-popover>
               <template #content>
                 <p>下载</p>
               </template>
               <a-tag color="#1890ff"><DownloadOutlined /></a-tag>
             </a-popover>
-          </a>
+          </a> -->
           <a-popconfirm
             title="确认删除该路线吗?"
             ok-text="确认"
