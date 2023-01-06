@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-06 10:33:23
+ * @LastEditTime: 2023-01-06 22:25:17
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -486,9 +486,9 @@ onBeforeUnmount(()=>{
         {{ record.qa_assignee && record.qa_assignee.username }}
       </template>
       <template #operate="{ record }">
-        <a @click="progress(record)">
+        <!-- <a @click="progress(record)">
           <a-tag color="#1890ff"><EditOutlined /> 查看进度</a-tag>
-        </a>
+        </a> -->
         <a @click="editClick(record)">
           <a-tag color="#1890ff"><EditOutlined /> 编辑</a-tag>
         </a>
