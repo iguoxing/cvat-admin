@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-05 23:44:13
+ * @LastEditTime: 2023-01-06 10:33:23
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -162,7 +162,7 @@ function progress(item){
         item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+')'
       }else {
         item.progressDesc = statusProgress[result.state]
-        if(result.state !== 'Finished'){
+        if(result.state !== 'Finished' && result.state !== 'Failed'){
           message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
         }
       }
