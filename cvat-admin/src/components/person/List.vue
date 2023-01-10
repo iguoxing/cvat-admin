@@ -17,7 +17,7 @@ const pagination = ref({ pageSize: 10, current: 1, total: 0 });
 const columns = [
   {
     title: "人员ID",
-    dataIndex: "id",
+    dataIndex: "personId",
   },
   {
     title: "用户名",
@@ -70,6 +70,10 @@ function getList() {
 
   promise.then((result: any) => {
     if (result) {
+      // TODO 添加序号
+      result.results.forEach((value, index) => {
+        value.personId = (pagination.value.current-1)*pagination.value.pageSize+index+1
+      })
       res.value = result.results;
       pagination.value.total = result.count;
     }
@@ -133,6 +137,10 @@ function searchName(){
 
   promise.then((result: any) => {
     if (result) {
+      // TODO 添加序号
+      result.results.forEach((value, index) => {
+        value.personId = index
+      })
       res.value = result.results;
       pagination.value.total = result.count;
     }
@@ -149,7 +157,7 @@ onMounted(() => {
   <div>
     <a-row type="flex" justify="between" align="start">
       <a-col flex="1 1 200px">
-        <a-page-header title="人员管理" />
+        <a-page-header title="用户管理" />
       </a-col>
       <a-col>
         <a-button type="primary" @click="handleCreate"> 新建人员 </a-button>

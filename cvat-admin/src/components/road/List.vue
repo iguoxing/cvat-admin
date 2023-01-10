@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-03 11:38:33
- * @LastEditTime: 2023-01-05 23:43:02
+ * @LastEditTime: 2023-01-10 19:43:50
  * @FilePath: /cvat-admin/src/components/road/List.vue
  * @Description: file information
 -->
@@ -263,7 +263,9 @@ onMounted(() => {
         {{ record.end_station ? handleMilesData(record.end_station) : "-" }}
       </template>
       <template #status="{ record }">
-        {{ statusType[record.status] }}
+        <a-tag color="red" v-if="record.status=='annotation'">{{ statusType[record.status] }}</a-tag>
+        <a-tag color="red" v-if="record.status=='blue'">{{ statusType[record.status] }}</a-tag>
+        <a-tag color="red" v-if="record.status=='green'">{{ statusType[record.status] }}</a-tag>
       </template>
       <template #qa_rate="{ record }"> {{ record.qa_rate }}% </template>
       <template #labels="{ record }">

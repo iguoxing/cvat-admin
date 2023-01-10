@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-17 18:27:47
- * @LastEditTime: 2022-12-06 18:25:08
+ * @LastEditTime: 2023-01-10 19:15:08
  * @FilePath: /cvat-admin/src/components/template/List.vue
  * @Description: file information
 -->
@@ -35,10 +35,10 @@ const labelTypeArr = ref([
   { id: "tag", name: "标签" },
 ]);
 const columns = [
-  {
-    title: "模板ID",
-    dataIndex: "id",
-  },
+  // {
+  //   title: "模板ID",
+  //   dataIndex: "id",
+  // },
   {
     title: "模板名称",
     dataIndex: "name",

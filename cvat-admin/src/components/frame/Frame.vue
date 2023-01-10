@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-09-30 11:14:20
- * @LastEditTime: 2022-11-09 15:18:25
+ * @LastEditTime: 2023-01-10 19:40:10
  * @FilePath: /cvat-admin/src/components/frame/Frame.vue
  * @Description: file information
 -->
@@ -165,7 +165,7 @@ function exitLogin() {
         </a-menu-item>
         <a-menu-item key="400">
           <TeamOutlined />
-          <span :menu="400">人员管理</span>
+          <span :menu="400">用户管理</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>

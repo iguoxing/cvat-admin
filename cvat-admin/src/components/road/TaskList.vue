@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-06 22:25:17
+ * @LastEditTime: 2023-01-10 20:23:54
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -157,6 +157,7 @@ function progress(item){
 
   promise.then((result: any) => {
     if (result) {
+      item.state = result.state;
       if(result.state === 'Started'){
         message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'');
         item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+')'
@@ -172,12 +173,14 @@ function progress(item){
   return promise
 }
 function getOrders(order: any[]){
-  const getData = async (value) => {
-    value.progressDesc = "查询中..."
-    progress(value)
+  const getData = (value) => {
+    if(value.state !== 'Finished' && value.state !== 'Failed'){
+      value.progressDesc = "";
+      progress(value)
+    }
   }
   order.forEach((value) => {
-    getData(value)
+    getData(value);
   })
 }
 function getList() {
@@ -328,26 +331,17 @@ const removeDomain = (item: Domain) => {
     dynamicValidateForm.domains.splice(index, 1);
   }
 };
-const handleOk = () => {
-  visible.value = false;
-  dynamicValidateForm.domains.forEach((item) => {
-    item.name = pname + "_" +item.start_station + "~" + item.end_station;
-  });
-  formRef.value
-    .validate()
-    .then(() => {
-      console.log("values", dynamicValidateForm.domains);
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
+function handleOneItem(task){
+  task.project_id = pid
   const promise = new Promise((resolve, reject) => {
     axios({
-      method: "PATCH",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
-      data: {
-        tasks: dynamicValidateForm.domains,
-      },
+      method: "POST",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks",
+      // url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
+      data: task,
+      // data: {
+      //   tasks: [task],
+      // },
     }).then(function (data) {
       resolve(data && data.data);
     });
@@ -358,6 +352,34 @@ const handleOk = () => {
       getList();
     }
   });
+}
+function validData(val, index){
+  let tmp = true
+  if(val.toString()&& val.toString().split(".")&& val.toString().split(".")[1]&& val.toString().split(".")[1].length>=7 ){
+    message.warning('第'+(index+1)+'行，起止桩号长度超过7位，请重新输入');
+    tmp = false
+  }
+  return tmp
+}
+const handleOk = () => {
+  let isValid = true; // 默认合法
+  dynamicValidateForm.domains.forEach((item,index) => {
+    item.name = pname + "_" +item.start_station + "~" + item.end_station;
+  });
+  formRef.value
+    .validate()
+    .then(() => {
+      console.log("values", dynamicValidateForm.domains);
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+  if (isValid){
+    visible.value = false;
+    dynamicValidateForm.domains.forEach(value=>{
+      handleOneItem(value)
+    });
+  }
 };
 
 function deleteClick(item){
@@ -536,15 +558,24 @@ onBeforeUnmount(()=>{
           :label="'开始桩号'"
           :name="['domains', index, 'value']"
         >
-          <a-input
+          <a-input-number
             v-model:value="domain.start_station"
             placeholder="输入开始桩号"
+            :min="handleMilesData(categroyObj.min)"
+            :max="handleMilesData(categroyObj.max)"
+            :step="0.001"
+            :parser="value => parseFloat(value).toFixed(3)"
+            string-mode
             :style="inputStyle"
           />
           <span>结束桩号: </span>
-          <a-input
+          <a-input-number
             v-model:value="domain.end_station"
             placeholder="输入结束桩号"
+            :min="handleMilesData(categroyObj.min)"
+            :max="handleMilesData(categroyObj.max)"
+            :parser="value => parseFloat(value).toFixed(3)"
+            :step="0.001"
             :style="inputStyle"
           />
           <span>识别人员: </span>
