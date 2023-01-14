@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-10 20:23:54
+ * @LastEditTime: 2023-01-14 09:47:37
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -332,16 +332,17 @@ const removeDomain = (item: Domain) => {
   }
 };
 function handleOneItem(task){
-  task.project_id = pid
+  // task.project_id = pid
   const promise = new Promise((resolve, reject) => {
     axios({
-      method: "POST",
-      url: import.meta.env.VITE_APP_BASE_URL + "api/tasks",
-      // url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
-      data: task,
-      // data: {
-      //   tasks: [task],
-      // },
+      method: "PATCH",
+      // method: "POST",
+      // url: import.meta.env.VITE_APP_BASE_URL + "api/tasks",
+      url: import.meta.env.VITE_APP_BASE_URL + "api/projects/" + pid,
+      // data: task,
+      data: {
+        tasks: [task],
+      },
     }).then(function (data) {
       resolve(data && data.data);
     });
