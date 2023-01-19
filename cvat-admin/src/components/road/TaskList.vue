@@ -1,7 +1,7 @@
 <!--
  * @Author: ArdenZhao
  * @Date: 2022-10-15 11:16:35
- * @LastEditTime: 2023-01-14 09:47:37
+ * @LastEditTime: 2023-01-19 22:59:32
  * @FilePath: /cvat-admin/src/components/road/TaskList.vue
  * @Description: file information
 -->
@@ -91,7 +91,8 @@ const columns = [
   },
   {
     title: "创建进度",
-    dataIndex: "progressDesc"
+    dataIndex: "progressDesc",
+    slots: { customRender: "progressDesc" },
   },
   {
     title: "状态",
@@ -145,6 +146,9 @@ function handleTableChange(page: { current: number }) {
 function handleNumber (value){
   return parseFloat(value).toFixed(2) + '%'
 }
+function handleNumber2 (value){
+  return (parseFloat(value) * 100).toFixed(0);
+}
 function progress(item){
   const promise = new Promise((resolve, reject) => {
     axios({
@@ -160,9 +164,13 @@ function progress(item){
       item.state = result.state;
       if(result.state === 'Started'){
         message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]+'进度是：'+handleNumber(result.progress)+'');
-        item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+')'
+        // item.progressDesc = statusProgress[result.state] + '('+handleNumber(result.progress)+')'
+        item.progressState = 'Started';
+        item.progressNum = handleNumber2(result.progress);
+        item.progressDesc = statusProgress[result.state];
       }else {
         item.progressDesc = statusProgress[result.state]
+        // item.progressDesc = statusProgress[result.state]
         if(result.state !== 'Finished' && result.state !== 'Failed'){
           message.warning('当前任务'+ item.name + '的创建状态为：'+statusProgress[result.state]);
         }
@@ -175,8 +183,17 @@ function progress(item){
 function getOrders(order: any[]){
   const getData = (value) => {
     if(value.state !== 'Finished' && value.state !== 'Failed'){
-      value.progressDesc = "";
-      progress(value)
+      // 如果segments字段不为空并且长度大于0说明已经创建成功，不用请求创建进度，否则需要请求创建进度
+      if(value.segments && value.segments.length === 0){
+        value.progressState = "";
+        value.progressNum = "";
+        value.progressDesc = "";
+        progress(value)
+      }else{
+        value.progressNum = "1";
+        value.progressState = "Finished";
+        value.progressDesc = "已完成创建";
+      }
     }
   }
   order.forEach((value) => {
@@ -463,7 +480,7 @@ onMounted(() => {
   getCatalogue()
   timer.value = setInterval(() => {
     getOrders(res.value)
-  }, 10000);
+  }, 5000);
 });
 
 onBeforeUnmount(()=>{
@@ -498,6 +515,14 @@ onBeforeUnmount(()=>{
       </template>
       <template #updated_date="{ record }">
         {{ dayjs(record.updated_date).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
+      <template #progressDesc="{ record }">
+        <div v-if="record.progressState==='Started'">
+          {{ record.progressDesc }} <a-progress :percent="record.progressNum" size="small" />
+        </div>
+        <div v-if="record.progressState!=='Started'">
+          {{ record.progressDesc }}
+        </div>
       </template>
       <template #status="{ record }">
           {{ statusType[record.status] }}
